@@ -1,0 +1,432 @@
+[
+  {
+    "id": "HIST-COLDWAR-001",
+    "category": "Cold War Armament of Proxies (1950s-1970s)",
+    "scenario": "Adversary provides massive military support (e.g., F-86 Sabres, F-104 Starfighters, M48 Patton tanks, and billions in aid via SEATO/CENTO) to a hostile proxy state to create a military imbalance.",
+    "keywords": "cold war seato cento pakistan f-86 sabre f-104 patton tank military aid 1965",
+    "countermeasures": [
+      "MILITARY: Accelerate domestic defense manufacturing ecosystems to counter imported hardware.",
+      "TACTICAL: Develop specialized counter-tactics against specific imported platforms (e.g., using lightweight Gnats against heavy Sabres as done in 1965).",
+      "DIPLOMATIC: Expose the misuse of 'anti-terror' or 'anti-communist' weapons against a democratic nation to international forums."
+    ]
+  },
+  {
+    "id": "HIST-1971-001",
+    "category": "Naval Coercion & Superpower Intimidation (1971)",
+    "scenario": "Superpower deploys a naval armada (e.g., USS Enterprise Task Force 74 in the Bay of Bengal during the Bangladesh Liberation War under Nixon/Kissinger) to intimidate India.",
+    "keywords": "1971 fleet naval bay of bengal usa superpower intimidate aircraft carrier maritime nixon kissinger uss enterprise",
+    "countermeasures": [
+      "DIPLOMATIC: Activate mutual defense pacts (e.g., 1971 Indo-Soviet Treaty) to create a geopolitical stalemate.",
+      "MILITARY: Deploy indigenous nuclear submarines (SSBNs/SSNs) to chokepoints to deny sea control to foreign fleets.",
+      "STRATEGIC: Accelerate indigenous anti-ship ballistic missile (ASBM) programs."
+    ]
+  },
+  {
+    "id": "TECH-NUC-001",
+    "category": "Technology Denial Regimes (Post-1974)",
+    "scenario": "Creation of international cartels (like the Nuclear Suppliers Group post-Smiling Buddha) to deny critical nuclear fuel, reactors, and advanced electronics to stunt national growth.",
+    "keywords": "1974 smiling buddha nsg nuclear suppliers group fuel reactor electronics denial cartel",
+    "countermeasures": [
+      "INDIGENIZATION: Develop closed fuel cycle capabilities and thorium-based breeder reactors to bypass uranium embargoes.",
+      "DIPLOMATIC: Leverage geopolitical shifts to negotiate civil nuclear exceptions (e.g., 2008 Indo-US Nuclear Deal) without signing discriminatory treaties like NPT."
+    ]
+  },
+  {
+    "id": "TECH-SUPERCOMP-001",
+    "category": "Supercomputer & High-Tech Blockade (1980s)",
+    "scenario": "Adversary blocks the sale of critical high-performance computing (e.g., the 1980s Cray supercomputer denial) citing dual-use nuclear modeling concerns.",
+    "keywords": "supercomputer cray param cdac technology denial hpc block dual use 1980s",
+    "countermeasures": [
+      "R&D: Immediately establish specialized sovereign research bodies (e.g., C-DAC) with emergency funding.",
+      "INDIGENIZATION: Develop sovereign architecture (e.g., the PARAM series) to achieve total self-reliance in High-Performance Computing (HPC).",
+      "EXPORT: Once successful, export the indigenous technology to friendly developing nations to break the adversary's tech monopoly."
+    ]
+  },
+  {
+    "id": "TECH-SPACE-001",
+    "category": "Space & Missile Technology Export Controls (1990s)",
+    "scenario": "Use of treaties (like MTCR) to restrict access to launch vehicles and guidance systems, including pressuring third parties (e.g., pressuring Russia to cancel the ISRO cryogenic engine deal).",
+    "keywords": "cryogenic engine space isro mtcr missile guidance launch vehicle russia pressure deny",
+    "countermeasures": [
+      "R&D: Reroute funding to indigenous cryogenic engine development (e.g., CE-20 for GSLV).",
+      "STRATEGIC: Continue independent missile testing until technology matures enough to negotiate entry into the control regimes (like MTCR in 2016) from a position of strength."
+    ]
+  },
+  {
+    "id": "HIST-1998-001",
+    "category": "Economic Warfare & Sanctions (1998)",
+    "scenario": "Western block imposes sweeping economic and technological sanctions (Glenn Amendment) after sovereign nuclear tests (Pokhran-II), blocking loans and defense sales.",
+    "keywords": "1998 pokhran nuclear test sanctions economy weapon embargo pressure glenn amendment",
+    "countermeasures": [
+      "ECONOMIC: Launch high-yield sovereign bonds targeted specifically at the Indian Diaspora (e.g., Resurgent India Bonds) to bypass Western institutional funding.",
+      "TRADE: Shift bilateral trade to alternative currency mechanisms to bypass dollar reliance.",
+      "DIPLOMATIC: Use India's massive consumer market size as leverage to fracture the sanctions coalition."
+    ]
+  },
+  {
+    "id": "GEO-AUTONOMY-001",
+    "category": "Pressure on Strategic Autonomy (2010s-Present)",
+    "scenario": "Superpower threatens secondary sanctions (e.g., CAATSA over S-400 purchases) or forces withdrawal from critical energy projects (e.g., Iran-Pakistan-India pipeline).",
+    "keywords": "iran pipeline energy s-400 triumf caatsa russia weapon purchase sanction autonomy pressure",
+    "countermeasures": [
+      "DIPLOMATIC: Maintain strategic ambiguity and emphasize 'Multi-Alignment' doctrine.",
+      "FINANCIAL: Establish independent escrow accounts and Rupee-Ruble exchange mechanisms for defense acquisitions.",
+      "NEGOTIATION: Leverage counter-weights (e.g., pointing to adversary's support of China/Pakistan) to secure CAATSA waivers."
+    ]
+  },
+  {
+    "id": "GEO-CHINA-001",
+    "category": "Adversarial Economic Engineering (2001)",
+    "scenario": "Superpower actively aids the economic rise of a rival border state (e.g., US backing China's WTO entry in 2001) indirectly creating a massive geopolitical competitor.",
+    "keywords": "china wto world trade organization 2001 rise economy competitor support integrate",
+    "countermeasures": [
+      "ECONOMIC: Protect critical domestic manufacturing sectors through targeted tariffs and PLI (Production Linked Incentive) schemes.",
+      "ALLIANCES: Form economic security partnerships (e.g., Quad, Supply Chain Resilience Initiative) to decouple from the rival's manufacturing monopoly."
+    ]
+  },
+  {
+    "id": "COVERT-SAB-001",
+    "category": "Sabotage of Strategic Minds (1966)",
+    "scenario": "Suspicious accidents or targeted assassinations of top-tier Indian strategic minds (e.g., the 1966 Air India crash killing Homi J. Bhabha) to derail nuclear programs.",
+    "keywords": "homi bhabha assassination crash sabotage scientist nuclear isro drdo kill plane mont blanc cia 1966",
+    "countermeasures": [
+      "SECURITY: Elevate top strategic scientists to specialized CISF/NSG security cover.",
+      "PROTOCOL: Ban key scientists from traveling on commercial foreign airlines; mandate IAF transport.",
+      "STRATEGIC: Enforce strict 'Rule of Two' succession planning so the loss of one mind does not halt a national project."
+    ]
+  },
+  {
+    "id": "INTEL-OP-001",
+    "category": "Compromised Joint Intelligence Ops (1960s)",
+    "scenario": "Joint intelligence operations with untrusted superpowers result in environmental/strategic risks (e.g., the Nanda Devi nuclear sensor loss).",
+    "keywords": "nanda devi nuclear sensor monitor china mountain lost radiation intelligence cia",
+    "countermeasures": [
+      "PROTOCOL: Mandate absolute sovereign control over any nuclear or highly sensitive hardware deployed on Indian soil.",
+      "ENVIRONMENTAL: Deploy specialized NDRF/BARC teams for continuous radiological monitoring in compromised operational zones."
+    ]
+  },
+  {
+    "id": "COVERT-ESP-001",
+    "category": "Intelligence Infiltration (2002-2004)",
+    "scenario": "Foreign intelligence penetrates Indian agencies by putting a high-ranking RAW/IB official on their payroll (Precedent: 2004 Rabinder Singh defection via CIA).",
+    "keywords": "raw agent mole cia payroll intelligence leak defect spy espionage 2002 2004 security rabinder singh",
+    "countermeasures": [
+      "COUNTER-INTEL: Trigger a Tier-1 internal audit. Institute mandatory, randomized polygraphs for Joint-Secretary level and above.",
+      "CYBER: Implement strict air-gapping and digital compartmentation.",
+      "DIPLOMATIC: Expel identified handlers under diplomatic cover to signal zero tolerance."
+    ]
+  },
+  {
+    "id": "SUBVERSION-NGO-001",
+    "category": "Internal Subversion via Civil Society Funding",
+    "scenario": "Foreign entities use international foundations (e.g., Open Society, Ford Foundation) to funnel money to local NGOs, creating internal fault lines, protests, and false narratives.",
+    "keywords": "ngo open society ford foundation fcra funding narrative civil society interference protest toolkit usa west convert",
+    "countermeasures": [
+      "FINANCIAL: Invoke stringent ED/CBI probes and freeze accounts linked to anomalous FCRA routing.",
+      "LEGAL: Revoke FCRA licenses of any NGO directly participating in political lobbying.",
+      "NARRATIVE: Promote and fund indigenous think-tanks to provide data-backed counter-narratives."
+    ]
+  },
+  {
+    "id": "REGIME-CHANGE-001",
+    "category": "Neighborhood Encirclement & Regime Change",
+    "scenario": "Adversary orchestrates regime changes in India's immediate neighborhood (e.g., removing Sheikh Hasina in Bangladesh, Imran Khan in Pakistan, Mujibur Rahman in 1975, or shifts in Nepal/Sri Lanka) to install anti-India governments.",
+    "keywords": "regime change bangladesh sheikh hasina nepal sri lanka pakistan imran khan cia hindus minority border encirclement mujibur",
+    "countermeasures": [
+      "BORDER SECURITY: Seal borders to prevent weaponized refugee influxes; fortify BSF outposts.",
+      "COVERT DIPLOMACY: Activate deep-state backchannels with the host nation's military brass, bypassing hostile civilian proxies.",
+      "ECONOMIC: Leverage India's position as a transit hub. Squeeze the hostile regime's energy grids, port access, and credit lines.",
+      "NARRATIVE: Raise the persecution of minorities aggressively at the UN to delegitimize the proxy regime."
+    ]
+  },
+  {
+    "id": "AERO-SABOTAGE-001",
+    "category": "Aerospace Tech Denial & Financial Trap (GE Engines)",
+    "scenario": "India currently operates ~40 Tejas jets but requires 324 (Mk1/Mk1A/Mk2) to dominate the PAF and stand 90% competitive against China. The USA is deliberately delaying GE F404/F414 engine deliveries, despite India making advance payments. The superpower's goal is to kill the 324-jet masterplan, allowing Pakistan to maintain air parity, while forcing India into a financial trap where we must drain our $25B Capital Budget on expensive Western/foreign fighter jets.",
+    "keywords": "tejas 324 mk1 mk2 amca engine delay ge f404 f414 advance payment usa trap pakistan paf parity china plaaf expensive foreign hal drdo gtre capital budget",
+    "countermeasures": [
+      "LEGAL & FINANCIAL RETALIATION (MoD/MEA): Officially invoke penalty clauses for the delayed GE F404 engines and demand interest on the advance payments. Threaten to immediately cancel $15 Billion worth of pending US defense/commercial aviation deals unless delivery resumes within 60 days.",
+      "THE KAVERI MASTER-FUND (DRDO/GTRE): Divert $2 Billion from the $25B Capital Budget into a sovereign, non-lapsing fund for GTRE. Mandate the absolute completion of the Kaveri engine by buying out a struggling Western aerospace company to acquire their metallurgy IPs.",
+      "FOREIGN JET LEVERAGE (HAL): Refuse to fall into the $40 Billion foreign fighter trap. If stop-gap jets are needed to maintain the 30 squadrons, procure them via G2G deals (e.g., French Rafale) strictly under 'Make in India' clauses, ensuring 50% offsets are reinvested into ADA/HAL's Tejas Mk2/AMCA programs.",
+      "PAF ASYMMETRIC COUNTER (DRDO): Since the Tejas delay temporarily helps the PAF, immediately offset their advantage by heavily funding DRDO's surface-to-air missile production (Akash-NG, MRSAM) and deploying them along the western border to deny PAF airspace."
+    ]
+  }
+
+  ,{
+    "id": "ECO-SUPPLY-001",
+    "category": "Supply Chain Weaponization (APIs & Rare Earths)",
+    "scenario": "A hostile manufacturing superpower (e.g., China) abruptly chokes the export of Active Pharmaceutical Ingredients (APIs), rare earth minerals, or semiconductor precursors to India. This threatens to collapse the Indian healthcare system and stall indigenous defense/electronics manufacturing.",
+    "keywords": "supply chain api pharmaceutical medicine rare earth lithium semiconductor china chokehold export ban economy",
+    "countermeasures": [
+      "ECONOMIC (DEFENSE): Activate emergency Production Linked Incentive (PLI) schemes specifically for bulk drug parks and domestic rare-earth processing facilities.",
+      "RESOURCE DIPLOMACY: Fast-track the acquisition of lithium and critical mineral mines in friendly nations (e.g., Australia, Argentina, Chile) through state-owned entities like KABIL.",
+      "RETALIATION: Threaten a blockade of critical sea lanes (Malacca Strait) for the adversary's energy imports (oil/gas) using the Indian Navy if civilian medical supplies are weaponized.",
+      "STRATEGIC STOCKPILE: Mandate a 6-month mandatory national stockpile of critical life-saving APIs for all domestic pharmaceutical companies."
+    ]
+  },
+  {
+    "id": "GEO-WATER-001",
+    "category": "Hydrological Warfare & River Damming",
+    "scenario": "An upper-riparian adversary (e.g., China) constructs mega-dams on trans-boundary rivers like the Yarlung Tsangpo (Brahmaputra) to alter water flow, cause artificial floods, or induce droughts in Northeast India.",
+    "keywords": "water warfare dam brahmaputra yarlung tsangpo flood drought river northeast china hydrological",
+    "countermeasures": [
+      "INFRASTRUCTURE: Accelerate the construction of strategic lower-riparian mega-reservoirs in Arunachal Pradesh (e.g., Upper Siang project) to establish prior-use water rights under international law.",
+      "DIPLOMATIC: Forge a strict hydrological coalition with other lower-riparian nations (e.g., Bangladesh, Vietnam, Thailand) to build multilateral pressure against the adversary's Mekong and Brahmaputra damming.",
+      "MILITARY/SPACE: Task the NTRO and ISRO with 24/7 satellite surveillance of the adversary's dam sites to provide early warning of artificial flood releases.",
+      "NARRATIVE: Aggressively brand the adversary's actions as 'Ecological Terrorism' at the UN and global climate summits."
+    ]
+  },
+  {
+    "id": "SUBVERT-DIASPORA-001",
+    "category": "Transnational Separatism & Diaspora Subversion",
+    "scenario": "Western nations (e.g., Canada, UK, USA) provide safe havens, political backing, and intelligence cover to anti-India separatist elements (e.g., Khalistan extremists) under the guise of 'free speech.' This is used as a diplomatic pressure point to curb India's rising geopolitical influence.",
+    "keywords": "diaspora separatism khalistan canada uk usa free speech subversion extremist pressure safe haven protest",
+    "countermeasures": [
+      "DIPLOMATIC RETALIATION: Downgrade diplomatic ties, suspend visa services, and strip OCI (Overseas Citizen of India) cards from any individuals linked to separatist funding or protests.",
+      "INTELLIGENCE: Task RAW to aggressively expose and document the nexus between these separatist groups, transnational organized crime (drugs/gangs), and hostile intelligence agencies (e.g., ISI).",
+      "ECONOMIC: Freeze the Indian assets of diaspora extremists under the UAPA and initiate FATF (Financial Action Task Force) proceedings against the host nations for terror financing negligence.",
+      "NARRATIVE: Flip the narrative by officially issuing travel advisories against the host nations, citing rising hate crimes and gang violence to damage their international reputation."
+    ]
+  },
+  {
+    "id": "ECO-FINANCE-001",
+    "category": "Financial Warfare & Market Manipulation",
+    "scenario": "Foreign financial entities (short-sellers, rating agencies, or biased western media) launch coordinated narrative attacks on Indian corporate champions or the sovereign economy (e.g., Hindenburg-style attacks) to trigger massive capital flight, crash the stock market, and stall infrastructure growth.",
+    "keywords": "financial warfare market manipulation short seller hindenburg rating agency stock market capital flight economy attack",
+    "countermeasures": [
+      "REGULATORY DEFENSE: Instruct the SEBI and RBI to temporarily ban naked short-selling and heavily scrutinize FPI (Foreign Portfolio Investment) routing from offshore tax havens linked to the attackers.",
+      "DOMESTIC CAPITAL: Activate massive counter-purchases by state-backed domestic institutional investors (e.g., LIC, EPFO) to absorb the shock, stabilize the markets, and squeeze the foreign short-sellers.",
+      "LEGAL/NARRATIVE: Launch multi-jurisdictional defamation and financial terrorism lawsuits against the attackers while deploying domestic media to frame the attack as an assault on India's sovereign growth.",
+      "FINANCIAL INDEPENDENCE: Accelerate the internationalization of the Rupee and the integration of UPI globally to reduce dependence on Western financial clearing houses."
+    ]
+  }
+
+  ,{
+    "id": "SUBVERT-DOMESTIC-002",
+    "category": "Orchestrated Domestic 'Color Revolution'",
+    "scenario": "Western deep state and global philanthropic billionaires synchronize massive funding to orchestrate an internal 'Color Revolution'. They weaponize legitimate domestic grievances (farmers, labor, students) to paralyze the capital and force a democratically elected, pro-sovereignty government to collapse.",
+    "keywords": "color revolution regime change internal protest paralyze capital billionaire fund domestic subvert toolkit strike riot anarchy",
+    "countermeasures": [
+      "FEDERAL SECURITY: Enact Section 144 and use Central Armed Police Forces (CAPF) to instantly secure all federal administrative zones and critical transport arteries.",
+      "CYBER/COMMS: Temporarily restrict foreign internet gateways and social media nodes that are actively amplifying the 'toolkit' to break the coordination of the riots.",
+      "FINANCIAL DECAPITATION: Execute midnight crackdowns on the logistical and financial nerve centers of the protests, utilizing the NSA (National Security Act) against foreign-funded provocateurs.",
+      "COUNTER-MOBILIZATION: Activate nationalist grassroots organizations to peacefully reclaim public spaces and demonstrate massive domestic support for the government."
+    ]
+  },
+  {
+    "id": "NGO-INFRA-002",
+    "category": "NGO-Driven Infrastructure Sabotage (Economic Hitjob)",
+    "scenario": "Foreign intelligence uses heavily-funded 'environmental' or 'human rights' NGOs and global activist networks to orchestrate endless protests against India's critical strategic assets (e.g., shutting down copper smelters, semiconductor fabs, or nuclear plants) to keep India reliant on foreign imports.",
+    "keywords": "ngo protest environment shut down plant factory sterlite koodankulam infrastructure blockade economy hitjob foreign fund",
+    "countermeasures": [
+      "LEGAL SAFEGUARDS: Legally declare these critical economic assets as 'Strategic National Infrastructure', making it a federal crime to protest or blockade within a 10km radius.",
+      "INTELLIGENCE EXPOSURE: Task the IB and ED to trace and publicly expose the crypto/hawala funding linking protest leaders to foreign rival corporations.",
+      "NARRATIVE WARFARE: Launch state-backed counter-NGOs to highlight the 'Economic Terrorism' aspect of these protests, showing how they destroy Indian jobs.",
+      "EXECUTIVE ACTION: Fast-track environmental and judicial clearances for these plants using emergency sovereign decrees to bypass lower-court activist delays."
+    ]
+  },
+  {
+    "id": "COVERT-ASSASSIN-002",
+    "category": "Next-Gen Strategic Mind Sabotage",
+    "scenario": "Adversary intelligence shifts from crude plane crashes (like the Homi Bhabha precedent) to modern, untraceable assassinations. They use targeted biological agents, hack autonomous vehicles, or stage 'suicides' to eliminate India's top quantum computing, hypersonic missile, and AI researchers.",
+    "keywords": "assassination homi bhabha scientist kill murder poison cyber attack quantum ai researcher suicide covert spy accident",
+    "countermeasures": [
+      "GHOST PROTOCOL: Establish a 'Ghost Protocol' security blanket around Tier-1 scientists, completely scrubbing and anonymizing their public profiles, locations, and families from the internet.",
+      "MEDICAL/TECH SECURITY: Mandate regular toxicology screenings for key personnel and strictly ban them from using foreign-made smart cars, IoT home devices, or foreign medical implants.",
+      "DETERRENCE: Authorize RAW to establish a retaliatory 'tit-for-tat' covert action doctrine (Offensive Defense) to impose unacceptably high costs on adversary intelligence networks."
+    ]
+  },
+  {
+    "id": "LAWFARE-001",
+    "category": "Asymmetric Lawfare & Diplomatic Isolation",
+    "scenario": "Foreign powers use international bodies (e.g., UN Human Rights Council, USCIRF) or foreign domestic courts to draft fabricated dossiers on Indian political or military leaders. They attempt to issue international arrest warrants or asset freezes to force a leadership change or paralyze foreign policy.",
+    "keywords": "lawfare court unhr uscirf sanction leader arrest warrant human rights freeze asset regime change isolate interpol",
+    "countermeasures": [
+      "SOVEREIGN SHIELD LAW: Pass domestic legislation explicitly blocking compliance with foreign or international court orders regarding Indian state officials acting in national interest.",
+      "ASYMMETRIC RETALIATION: Open counter war-crimes tribunals or human rights investigations against Western leaders in Indian courts to create an international diplomatic stalemate.",
+      "MARKET WEAPONIZATION: Threaten to ban foreign corporations, banks, or NGOs from the Indian consumer market if they comply with or endorse these unilateral foreign sanctions."
+    ]
+  }
+
+  ,{
+    "id": "GEO-BUFFER-001",
+    "category": "Buffer State Collapse & Middle East Axis",
+    "scenario": "A superpower (e.g., USA) escalates a regional war alongside an ally (e.g., Israel) to completely destroy a mutual strategic buffer state (e.g., Iran). While India shares anti-terrorism synergies with the ally, the destruction of the buffer state eliminates India's independent energy supply, destroys critical transit routes (Chabahar) bypassing proxies (Pakistan), and leaves India exposed as the superpower's next potential target for strategic containment.",
+    "keywords": "iran israel usa war trump sanction oil gas chabahar port pakistan buffer destroy terrorism middle east",
+    "countermeasures": [
+      "DE-HYPHENATED DIPLOMACY: Execute strict 'De-hyphenation'. Expand high-tech defense and intelligence sharing with Israel, while simultaneously using covert backchannels to assure Iran of India's non-participation in Western regime-change efforts.",
+      "ASSET RING-FENCING: Shield strategic investments like Chabahar Port by aggressively integrating them into the International North-South Transport Corridor (INSTC) alongside Russia, making unilateral US sanctions geopolitically unviable.",
+      "ENERGY SHOCK-ABSORPTION: Immediately execute emergency procurement of discounted crude from alternative sanctioned/non-aligned states (e.g., Russia, Venezuela) and top-up the Strategic Petroleum Reserves (SPR) to 100% capacity.",
+      "PROXY REDEPLOYMENT ANTICIPATION: If the Iranian buffer falls, the hostile proxy (Pakistan) will have its Western flank secured. Pre-emptively shift strike corps to India's Western border and elevate the Western Naval Command's threat posture in the Arabian Sea."
+    ]
+  }
+
+  ,{
+    "id": "DATA-ENCIRCLEMENT-001",
+    "category": "Chronological Regime Change & Encirclement (2022-Present)",
+    "scenario": "Analysis of superpower-backed regime change timelines aimed at encircling India with compliant governments. Data points: In April 2022, a pro-sovereignty government in Pakistan (Imran Khan) was removed post a US cipher leak. In August 2024, a pro-India government in Bangladesh (Sheikh Hasina) was removed via violently funded student protests. The mathematical trajectory indicates the superpower is systematically dismantling Indian buffer states every 18-24 months.",
+    "keywords": "regime change timeline 2022 pakistan 2024 bangladesh nepal sri lanka maldives surround encircle election foreign interference next target",
+    "countermeasures": [
+      "PREDICTIVE ANALYSIS: The timeline dictates the next encirclement target will likely occur between late 2025 and 2026. High-probability targets are Nepal (leveraging MCC funding and internal political fragility) and Sri Lanka (leveraging IMF debt restructuring conditionalities).",
+      "ELECTION INTERVENTION PREEMPTION: Deploy IB and RAW assets to fully map the funding of opposition parties and civil society NGOs in Nepal and Sri Lanka 12 months prior to their national elections.",
+      "ECONOMIC PRE-EMPTION: Release massive, unconditional lines of credit and infrastructure grants to the incumbent pro-India governments in vulnerable neighboring states to out-bid Western/Chinese financial leverage.",
+      "COUNTER-INTELLIGENCE: Monitor US/Western embassy personnel movements in neighboring states; a sudden spike in meetings between foreign diplomats and local opposition leaders is the primary Indicator of Compromise (IoC) preceding a regime change."
+    ]
+  }
+
+  ,{
+    "id": "GEO-RIC-001",
+    "category": "The RIC Dilemma & The Asian Century Paradox",
+    "scenario": "Geopolitical theorists propose a Russia-India-China (RIC) alliance to counter US/Western hegemony. While India respects China's post-1960s economic miracle, a true alliance is blocked by deep-rooted hurdles: China's 1962 annexation of Aksai Chin, the occupation of Tibet, ongoing LAC border incursions, and Beijing's strategic funding of Pakistan to contain India. Russia acts as a historical partner to India but is increasingly economically dependent on China.",
+    "keywords": "ric russia india china alliance west usa multipolar 1962 aksai chin tibet pakistan proxy economy miracle hurdle paradox",
+    "countermeasures": [
+      "MULTI-ALIGNMENT HEDGING: Engage in non-Western forums (BRICS, SCO, RIC) to maintain a multipolar world order alongside Russia, while simultaneously deepening defense ties with the West (Quad) as a hard-power hedge against Chinese expansionism.",
+      "ECONOMIC EMULATION & DECOUPLING: Study and replicate China's ruthless 1980s-2000s manufacturing/infrastructure growth model (via PLI schemes, port-led development) while systematically decoupling critical Indian supply chains from Chinese control.",
+      "RUSSIAN LEVERAGE: Utilize India's massive energy purchases and defense contracts to ensure Russia does not become a pure vassal to Beijing, maintaining Moscow as a neutral supplier of strategic platforms (S-400, nuclear subs) even during Sino-Indian crises.",
+      "THE DIPLOMATIC RED LINE: Maintain the absolute policy that normal geopolitical and economic relations within the RIC framework cannot proceed without a verifiable return to the pre-2020 status quo on the LAC and the cessation of Beijing's military umbrella over Pakistan."
+    ]
+  }
+
+  ,{
+    "id": "PROXY-KASHMIR-001",
+    "category": "Superpower-Funded Proxy Warfare (Kashmir)",
+    "scenario": "A superpower (e.g., USA) provides massive military and financial aid to a proxy state (e.g., Pakistan) under the guise of geopolitical alliances or 'anti-terror' funds. The proxy systematically diverts these resources to fund cross-border terrorism, radicalization, and secessionist movements in Indian territories (Kashmir). The objective is to bleed India with 'a thousand cuts' and keep it permanently bogged down in internal security crises.",
+    "keywords": "kashmir proxy terrorism fund usa pakistan war on terror bleed thousand cuts secession article 370 insurgent militancy",
+    "countermeasures": [
+      "KINETIC DETERRENCE: Shift from defensive posture to 'Offensive Defense' (e.g., Surgical Strikes, Balakot airstrikes) to impose immediate, unacceptable costs on the proxy's terror launchpads.",
+      "FINANCIAL ISOLATION: Aggressively use diplomatic leverage at the FATF (Financial Action Task Force) to grey-list/black-list the proxy, choking its access to IMF and World Bank bailouts.",
+      "INTERNAL INTEGRATION: Execute systemic legal and socio-economic integration of the disputed region (e.g., Abrogation of Article 370) combined with massive, hyper-speed infrastructure development to alienate the local populace from the secessionist narrative.",
+      "SUPERPOWER LEVERAGE: Use the superpower's complicity in arming the proxy as a diplomatic bargaining chip to extract highly sensitive defense technology (e.g., jet engines, predator drones) at discounted rates."
+    ]
+  },
+  {
+    "id": "ENERGY-COERCION-001",
+    "category": "Energy Weaponization & Sovereign Blackmail (2025-2026)",
+    "scenario": "A regional war (e.g., Iran-Israel) chokes Middle Eastern oil supplies. To survive, India procures discounted Russian crude. A superpower (USA) weaponizes trade by imposing/threatening severe tariffs (e.g., 2025 Trump tariffs) on Indian exports to block Russian purchases. Simultaneously, the superpower secures a monopoly over alternative reserves (e.g., regime change in Venezuela/Maduro capture), attempting to force India to buy exorbitantly priced American energy to drain its forex reserves.",
+    "keywords": "oil energy security russia tariff trump usa middle east war iran maduro venezuela monopoly expensive blackmail import",
+    "countermeasures": [
+      "ASYMMETRIC ECONOMIC RETALIATION: If the superpower reinstates tariffs on Indian exports, immediately draft retaliatory 'Digital Sovereignty Taxes' on their massive tech monopolies (Google, Meta, Apple, Amazon) operating in India's billion-user market.",
+      "SHADOW FLEET & DE-DOLLARIZATION: Rapidly expand the 'shadow fleet' of independently insured oil tankers and strictly execute Russian/alternative oil trades using Rupee-Ruble or UAE Dirham mechanisms, completely bypassing the US SWIFT financial tracking system.",
+      "ENERGY DIVERSIFICATION: Leverage the crisis to fast-track the National Green Hydrogen Mission and the commissioning of indigenous nuclear power plants, permanently decoupling India's economic growth from global fossil-fuel chokeholds.",
+      "STRATEGIC STOCKPILING: Use any temporary lifting of tariffs to aggressively over-purchase and fill India's Strategic Petroleum Reserves (SPR) and underground salt caverns to 100% capacity, buying time against future blackmail."
+    ]
+  }
+
+  ,{
+    "id": "GEO-QUAD-001",
+    "category": "The Quad Trap & Indo-Pacific Proxy Warfare",
+    "scenario": "The US leverages the Quad (USA, India, Japan, Australia) to use India as a frontline proxy against China's PLA. Data indicates the US withheld core tech from India (e.g., GE-F414 engines) while gifting Australia a $368 Billion AUKUS nuclear submarine deal. The trap: Washington wants India to bleed economically and militarily in the Himalayas (post-2020 Galwan) and the Malacca Strait, while the US mainland remains untouched and profits from arms sales.",
+    "keywords": "quad usa china proxy aukus nuclear submarine 368 billion galwan himalayas malacca strait trap treaty alliance",
+    "countermeasures": [
+      "STRATEGIC AUTONOMY (MEA): Categorically refuse any binding mutual-defense treaty with the USA. Extract high-level satellite intelligence (via BECA/LEMOA agreements) and MQ-9B drones, but commit ZERO Indian troops to US-led conflicts in Taiwan or the South China Sea.",
+      "NAVAL ASYMMETRY (Indian Navy): Divert $5 Billion from the Capital Budget to fast-track 'Project 75 Alpha' (indigenous nuclear attack submarines / SSNs) since the US will never share AUKUS-level propulsion tech with a non-white, non-NATO ally.",
+      "THE RUSSIA HEDGE (PMO): Publicly maintain the S-400 missile shield procurement from Russia to explicitly signal Washington that India is a multipolar pole, not a subordinate American vassal state."
+    ]
+  },
+  {
+    "id": "GEO-PEARLS-001",
+    "category": "String of Pearls & Neighborhood Regime Change",
+    "scenario": "China systematically executes debt-trap diplomacy and funds anti-India political opposition to encircle India. Real Data: $62B CPEC in Gwadar (Pakistan), 99-year lease of Hambantota (Sri Lanka), the 2023 'India Out' campaign funding in Maldives (Muizzu), and the violent Aug 2024 US/Foreign-backed ouster of pro-India Sheikh Hasina in Bangladesh. Predictive modeling indicates the next heavily funded regime change target will be Nepal's 2026/2027 elections to cut off India's northern buffer.",
+    "keywords": "string of pearls china encircle regime change bangladesh hasina maldives muizzu nepal election 2024 2026 2027 hambantota sri lanka gwadar cpec",
+    "countermeasures": [
+      "NECKLACE OF DIAMONDS (Indian Navy/MEA): Militarily operationalize access to Sabang Port (Indonesia), Duqm Port (Oman), Agalega (Mauritius), and Changi (Singapore). If China triggers a border war, blockade the Malacca Strait to choke 80% of China's $500B annual energy imports.",
+      "PREEMPTIVE ELECTION FINANCING (RAW/IB): Deploy a $2 Billion covert operational budget to track and out-spend Chinese/Western intelligence funding in the upcoming Nepal and Sri Lanka elections. Secure the political survival of pro-India candidates.",
+      "ECONOMIC UMBRELLA (RBI): Offer unconditional, rapid $1B+ currency swap lines to Bangladesh and Maldives to immediately collapse the Chinese debt-trap narrative and restore Indian economic leverage in Dhaka and Malé."
+    ]
+  },
+  {
+    "id": "SUBVERT-NGO-001",
+    "category": "NGO Internal Subversion & Economic Sabotage",
+    "scenario": "Western intelligence agencies funnel dark money through 'Human Rights' and 'Climate' NGOs to orchestrate protests that halt critical Indian infrastructure. Real Data: The foreign-funded 2018 shutdown of the Sterlite Copper plant in Tamil Nadu turned India from a net exporter to a net importer of copper, costing the economy over $2 Billion. Similar toolkits targeted the Adani Vizhinjam Port (2022) and Kudankulam Nuclear Plant. The goal is to keep India dependent on Western imports.",
+    "keywords": "ngo foreign funding subversion protest sterlite copper 2 billion adani vizhinjam kudankulam nuclear toolkit amnesty greenpeace climate fcra intelligence",
+    "countermeasures": [
+      "FINANCIAL DECAPITATION (ED/MHA): Weaponize the FCRA (Foreign Contribution Regulation Act). Instantly freeze the bank accounts of any NGO receiving undocumented Western/Chinese funds that organize protests near strategic ports, nuclear plants, or defense factories.",
+      "CYBER FORENSICS (NTRO/CERT-In): Map the IP addresses and crypto-wallets of protest organizers. Prove the financial link between local 'activists' and hostile foreign intelligence agencies (CIA/ISI), classifying the protests as state-sponsored economic terrorism.",
+      "SOVEREIGN INFRASTRUCTURE ACT (Parliament): Pass emergency legislation categorizing mega-ports, semiconductor fabs, and nuclear plants as 'Tier-1 National Security Assets', making it a non-bailable offense to block their construction or operation."
+    ]
+  },
+  {
+    "id": "LAWFARE-001",
+    "category": "Asymmetric Lawfare & Democracy Ratings Weaponization",
+    "scenario": "When India refuses to obey Western dictates (e.g., buying Russian oil), the West weaponizes global institutions. Data: V-Dem Institute and Freedom House artificially downgrade India to an 'Electoral Autocracy.' USCIRF threatens 'Country of Particular Concern' status. The ultimate threat is using these fake dossiers to justify CAATSA or Magnitsky economic sanctions, freezing India out of the SWIFT banking system to trigger a stock market crash.",
+    "keywords": "lawfare democracy rating downgrade freedom house v-dem uscirf human rights caatsa magnitsky sanction swift stock market weaponize",
+    "countermeasures": [
+      "MARKET HOSTAGE STRATEGY (Ministry of Finance): Leverage India's 1.4 Billion consumer market. Privately threaten to ban Apple, Amazon, and Tesla from the Indian market if the US government executes CAATSA sanctions. Force Wall Street billionaires to lobby the US Congress on India's behalf.",
+      "SOVEREIGN RATING AGENCIES (BRICS/RBI): Fund and launch an independent, non-Western global credit and democracy rating agency based in the Global South. Systematically discredit Western NGOs as heavily biased tools of neo-imperialism.",
+      "DE-DOLLARIZATION ACCELERATION (RBI): Fast-track the integration of India's UPI with Russia's MIR and China's CIPS. Ensure that if the US unplugs India from the SWIFT network, 100% of our energy and defense trade continues seamlessly in local currencies."
+    ]
+  }
+  ,{
+    "id": "DIASPORA-FRAGMENTATION-001",
+    "category": "Diaspora Consolidation & Counter-Lobbying",
+    "scenario": "Despite being the wealthiest demographic in the US, the Indian diaspora fails to secure 'unconditional' US support (unlike the pro-Israel lobby) due to deep political fragmentation. Furthermore, hostile intelligence proxies actively fund separatist/anti-India factions within the US to lobby against New Delhi. The US establishment exploits this division to delay tech-transfers (GE engines) and harbor anti-India elements.",
+    "keywords": "diaspora fragment aipac lobby pac khalistan separatist tech ceo divided unifed unconditional support washington",
+    "countermeasures": [
+      "SINGLE-ISSUE PAC CONSOLIDATION (MEA): Secretly orchestrate the merger of fragmented Indian-American PACs into a single, ruthless, 'Single-Issue' lobbying monolith. Mandate that campaign funding is distributed to US politicians strictly based on their voting record on US-India defense ties, ignoring all US domestic culture-war politics.",
+      "DIASPORA PURGE (RAW/NIA): Identify, track, and financially dismantle hostile diaspora fronts (e.g., separatist/terror sympathizers) operating as 'human rights' NGOs in Washington D.C., neutralizing their ability to poison US Congressional briefings against India.",
+      "SILICON VALLEY ELITE LEVERAGE (PMO): Bypass the fractured voter base entirely by establishing a direct, closed-door council with the top 50 Indian-origin CEOs of US tech and finance monopolies. Use their corporate lobbying power to threaten US lawmakers with the loss of Indian market access if anti-India policies are pursued.",
+      "THE 'AUTONOMY' BARGAIN: Accept that the US will never grant 'unconditional' support to a non-vassal state. Therefore, lobby strictly for transactional, hard-power transfers (jet engines, drones) while retaining the Russian and European hedges."
+    ]
+  }
+
+  ,{
+    "id": "DIASPORA-FRAGMENTATION-001",
+    "category": "Diaspora Consolidation & Covert Blowback Risks",
+    "scenario": "India attempts to consolidate its wealthy but fragmented US diaspora into a single-issue lobbying monolith (similar to AIPAC) to extract defense tech (GE Engines) and counter hostile separatist NGOs. However, if these covert lobbying or neutralization efforts are exposed by US Intelligence (FBI/CIA), the US establishment will trigger severe asymmetric retaliation, viewing it as an attack on their sovereign democratic process.",
+    "keywords": "diaspora fragment aipac lobby pac khalistan separatist tech ceo divided unifed washington fbi cia blowback five eyes retaliation exposure",
+    "countermeasures": [
+      "PLAUSIBLE DENIABILITY (RAW/MEA): All diaspora funding consolidation must be executed strictly through naturalized US citizens using opaque Super PACs. Zero direct financial links can exist between New Delhi and Washington lobbying groups to prevent Foreign Agents Registration Act (FARA) violations.",
+      "THE 'SILICON SHIELD' (PMO): Before executing high-risk political maneuvers, bind top US tech monopolies (Apple, Google) to multi-billion dollar manufacturing plants in India. If the US government threatens retaliation, these mega-corporations will act as a human shield to protect their supply chains.",
+      "ASYMMETRIC DE-ESCALATION (NSA): If a covert operation on US soil is compromised, immediately sacrifice low-level assets, temporarily suspend intelligence sharing with the 'Five Eyes', and pivot to massive defense procurements (e.g., Boeing aircraft) to buy off the US political establishment and bury the scandal."
+    ]
+  }
+  ,{
+    "id": "GEO-CHINA-PLAYBOOK-001",
+    "category": "Asymmetric Hegemony (Replicating the China Playbook)",
+    "scenario": "To prevent future coercion by the US or China, India shifts from a defensive 'balancing' posture to actively building structural global leverage. Learning from China's 30-year rise, India must create 'Global Dependencies'—monopolizing critical sectors so that sanctioning India means crashing the Western economy. India substitutes China's Rare Earth monopoly with its own monopolies: The Global AI/Tech Workforce, Active Pharmaceutical Ingredients (APIs), and Digital Public Infrastructure (UPI/Stack).",
+    "keywords": "learn from china leverage monopoly dependency hegemon civil-military fusion proxy pharmaceutical api workforce upi stack adani tata reliance",
+    "countermeasures": [
+      "GLOBAL DEPENDENCY CREATION (Ministry of Commerce): Achieve a 70% global monopoly on generic drug manufacturing and critical APIs. If the US threatens CAATSA or human rights sanctions, India holds the leverage to legally halt pharmaceutical exports, instantly causing a catastrophic healthcare crisis in North America and Europe.",
+      "CIVIL-MILITARY FUSION (PMO/DRDO): Replicate China's model of state-backed corporate champions. Mandate deep integration between India's massive private conglomerates (Tata, L&T, Adani, Reliance) and defense R&D. Use state subsidies to help them undercut Western defense and infrastructure contractors globally.",
+      "THE 'BRAHMOS' PROXY SHIELD (MEA/Indian Navy): India does not use rogue nuclear states like North Korea. Instead, India builds an 'Archipelago Shield'. Heavily arm smaller, dependent Indian Ocean nations (Mauritius, Seychelles, Maldives) with BrahMos cruise missiles and coastal radars, turning them into unsinkable proxy fortresses that deny the US and Chinese navies access to our waters.",
+      "THE AI CHOKEPOINT (MeitY): China controls the hardware (Rare Earths); India must control the software (Human Capital). Systematically embed Indian nationals into the absolute core of global AI architecture, cybersecurity, and global banking IT. Make it technically impossible for Western tech monopolies to function without Indian talent, creating an invisible, un-sanctionable shield."
+    ]
+  }
+
+  ,{
+    "id": "GEO-HEGEMON-CLASH-001",
+    "category": "Superpower Standoff & The Supply Chain Exodus",
+    "scenario": "The US militarily contains China via forward bases (Japan, South Korea, Singapore). China counter-leverages by deploying a nuclear North Korea to distract US forces and weaponizing its 80% global monopoly on Rare Earth Elements (critical for AI and defense tech). To break China, the US triggers a 'Corporate Exodus', forcing Western mega-corporations to pull manufacturing out of China. India's objective is to ruthlessly exploit this standoff to absorb fleeing Western capital while protecting its own tech sector from Chinese Rare Earth blockades.",
+    "keywords": "containment south korea japan singapore bases rare earth metals ai north korea nuclear proxy supply chain decouple apple foxconn exodus leverage",
+    "countermeasures": [
+      "THE GREAT ABSORPTION (Ministry of Commerce): Weaponize the US-China decoupling. Deploy massive Production Linked Incentives (PLI) to aggressively poach US manufacturing (Apple, Foxconn, Tesla, Nvidia) fleeing Shenzhen. Offer them tax-free havens in Gujarat and Tamil Nadu to permanently shift the global supply chain center of gravity to India.",
+      "RARE EARTH SOVEREIGNTY (Ministry of Mines/Quad): Anticipate a Chinese embargo on Rare Earths (Gallium/Germanium). Immediately fund deep-sea mining (Samudrayaan mission) and strike aggressive strategic mineral pacts with Australia, Chile, and Africa to build an independent supply chain for India's AI and semiconductor sectors.",
+      "PROXY EXPLOITATION (RAW/Army): While the US Pacific Fleet is hyper-fixated on the North Korean nuclear threat and the Taiwan Strait, quietly and aggressively consolidate absolute military dominance in the Himalayas and the Indian Ocean Region (IOR) without triggering Western alarm.",
+      "THE 'NEUTRAL FACTORY' LEVERAGE (MEA): Maintain strict geopolitical neutrality. Ensure that US companies view India as a safe 'friend-shoring' destination that will never face US sanctions, while assuring China that India will not join a formal NATO-style military alliance against Beijing."
+    ]
+  }
+  ,{
+    "id": "REGIME-CHANGE-002",
+    "category": "Two-Front Proxy Encirclement (Bangladesh 2024-2026)",
+    "scenario": "August 2024: Pro-India leader Sheikh Hasina ousted via externally-backed student protests (color revolution) and exiled to India. February 2026: Tarique Rahman (BNP) assumes power as PM. The strategic intent is to establish an anti-India, pro-Pakistan administration in Dhaka, effectively creating a 'Two-Front Pakistan' containment strategy while China maintains active aggression on the northern border. The RIC/BRICS forums fail to mitigate this due to inherent Sino-Indian friction.",
+    "keywords": "bangladesh sheikh hasina tarique rahman bnp ouster color revolution protest student 2024 2026 china pakistan two front encirclement ric brics",
+    "countermeasures": [
+      "BORDER MILITARIZATION: Immediately elevate the BSF to a wartime footing along the 4,000km eastern border to block hostile infiltrations, weapon smuggling, and demographic warfare engineered by the new Dhaka regime.",
+      "ECONOMIC STRANGULATION: Leverage India's absolute control over Bangladesh's river systems and land-locked transit routes. Systematically delay customs clearances for essential commodities to cripple the BNP government's domestic popularity.",
+      "COVERT SPONSORSHIP: Activate intelligence assets to extensively fund and arm pro-India/anti-BNP political factions within Bangladesh to create permanent internal instability, denying Dhaka the bandwidth to act as a proxy against India.",
+      "STRATEGIC HEDGE: Maintain engagement in BRICS but permanently discard the 'RIC' (Russia-India-China) illusion. Re-route diplomatic capital into bilateral military pacts with Japan and Vietnam to counter-encircle China."
+    ]
+  },
+  {
+    "id": "ENERGY-COERCION-002",
+    "category": "Sovereign Energy Extortion (Venezuela & US Tariff Deal 2026)",
+    "scenario": "January 3, 2026: US forces abduct Venezuelan leader Nicolas Maduro (pro-Russia/China), seizing absolute control of massive global oil reserves. February 2, 2026: US leverages this energy monopoly to coerce India. PM Modi and Trump announce a 'trade deal' dropping US tariffs to 18%, but strictly conditional on India halting discounted Russian crude imports and buying exorbitant US/Venezuelan oil, deliberately designed to drain India's foreign exchange reserves.",
+    "keywords": "venezuela nicolas maduro abduction trump modi tariff 18 percent trade deal russian oil energy extortion reserve drain capture 2026",
+    "countermeasures": [
+      "DECEPTIVE COMPLIANCE (MEA/MoPNG): Publicly agree to the 18% tariff deal and US oil purchases to placate Washington, while covertly expanding the 'Shadow Fleet' to continue buying Russian crude via third-party UAE/Omani shell companies.",
+      "CURRENCY WEAPONIZATION (RBI): If forex reserves begin draining rapidly due to expensive US oil, immediately mandate that 50% of all US tech conglomerates' (Apple, Google, Meta) revenue generated in India must be reinvested domestically in Rupees, forbidding dollar repatriation.",
+      "NUCLEAR ACCELERATION: Use the energy crisis as a domestic justification to bypass environmental hurdles and break ground on 20 new indigenous nuclear reactors within 24 months, permanently snapping the US petrodollar leash.",
+      "ASYMMETRIC COUNTER-LEVERAGE: Threaten to systematically leak advanced Western aerospace telemetry data (acquired via defense deals) to Russian intelligence if the US imposes secondary sanctions on Indian banks for shadow-trading."
+    ]
+  }
+]
