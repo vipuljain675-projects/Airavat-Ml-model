@@ -56,6 +56,7 @@ def load_raw_events(path: str | Path) -> list[StrategicEvent]:
         scenario = record.get("scenario", "").strip()
         keywords = record.get("keywords", "").strip()
         countermeasures = record.get("countermeasures", [])
+        retaliatory_risks = record.get("retaliatory_risks", [])
         combined_text = " ".join(part for part in (category, scenario, keywords) if part)
 
         events.append(
@@ -74,6 +75,7 @@ def load_raw_events(path: str | Path) -> list[StrategicEvent]:
                 leading_indicators=keywords.split(),
                 outcomes=[],
                 follow_on_risks=[],
+                retaliatory_risks=retaliatory_risks,
                 notes="\n".join(countermeasures),
             )
         )

@@ -89,7 +89,9 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     return "\n".join(lines)
 
 
-def build_llm_prompt(query: str, result: ForecastResult) -> str:
+def build_llm_prompt(
+    query: str, result: ForecastResult, live_context: str | None = None
+) -> str:
     top_analogs = result.analogs[:5]
     analog_blocks = []
     for event, similarity in top_analogs:
@@ -101,11 +103,20 @@ def build_llm_prompt(query: str, result: ForecastResult) -> str:
                     f"Title: {event.title}",
                     f"Similarity: {similarity:.3f}",
                     f"Summary: {event.summary}",
+                    f"Countermeasures: {'; '.join(event.outcomes[:4])}",
+                    f"Predicted Adversary Retaliation: {'; '.join(event.retaliatory_risks)}",
                     f"Event Types: {', '.join(event.event_types)}",
                     f"Indicators: {', '.join(event.leading_indicators[:8])}",
                     f"Notes: {event.notes[:500]}",
                 ]
             )
+        )
+
+    live_section = ""
+    if live_context:
+        live_section = (
+            f"\n\n{live_context}\n"
+            "Use the LIVE INTELLIGENCE FEED above to connect current events to the historical patterns.\n"
         )
 
     return (
@@ -114,7 +125,8 @@ def build_llm_prompt(query: str, result: ForecastResult) -> str:
         "Separate direct evidence from inference. "
         "If causation is uncertain, say it is an inference.\n\n"
         f"Query:\n{query}\n\n"
-        f"Risk scores:\n{result.risk_scores}\n\n"
+        f"Risk scores:\n{result.risk_scores}\n"
+        f"{live_section}\n"
         "Relevant historical records:\n"
         + "\n\n".join(analog_blocks)
         + "\n\nWrite the answer with these sections exactly:\n"

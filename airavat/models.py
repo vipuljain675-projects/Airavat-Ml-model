@@ -19,6 +19,7 @@ class StrategicEvent:
     leading_indicators: list[str] = field(default_factory=list)
     outcomes: list[str] = field(default_factory=list)
     follow_on_risks: list[str] = field(default_factory=list)
+    retaliatory_risks: list[str] = field(default_factory=list)
     notes: str = ""
 
     def searchable_text(self) -> str:
@@ -32,6 +33,7 @@ class StrategicEvent:
                 " ".join(self.event_types),
                 " ".join(self.leading_indicators),
                 " ".join(self.follow_on_risks),
+                " ".join(self.retaliatory_risks),
                 self.notes,
             ]
         ).strip().lower()
