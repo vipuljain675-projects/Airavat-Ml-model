@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian-950: #050505;
+  --color-obsidian-900: #0a0a0a;
+  --color-obsidian-800: #121212;
+  --color-cyan-vibrant: #00f2ff;
+  --color-amber-vibrant: #ffaa00;
+  
+  --font-inter: "Inter", sans-serif;
+  --font-orbitron: "Orbitron", sans-serif;
+}
+
+:root {
+  --background: var(--color-obsidian-950);
+  --foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.cyan-glow {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.amber-glow {
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.scanner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-cyan-vibrant), transparent);
+  animation: scan-line 4s linear infinite;
+  opacity: 0.5;
+}
