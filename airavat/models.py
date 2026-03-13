@@ -46,6 +46,7 @@ class ForecastResult:
     risk_scores: dict[str, float]
     indicators_to_watch: list[str]
     evidence_gaps: list[str]
+    boosted_ids: set[str] = field(default_factory=set)
 
 
 @dataclass

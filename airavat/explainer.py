@@ -42,13 +42,13 @@ def build_timeline(result: ForecastResult) -> str:
 def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     top_risks = _top_risks(result)
     if not top_risks:
-        return "No strong pattern was found in the current dataset for this query."
+        return "⚠️  No strong pattern was found in the current dataset for this query."
 
     risk_text = ", ".join(
         f"{RISK_LABEL_TEXT.get(label, label)} ({score:.2f})" for label, score in top_risks
     )
 
-    top_analogs = result.analogs[:3]
+    top_analogs = result.analogs
     analog_titles = ", ".join(event.title for event, _ in top_analogs) if top_analogs else "none"
 
     actor_mentions: defaultdict[str, int] = defaultdict(int)
@@ -60,29 +60,33 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     focus = ", ".join(sorted(actor_mentions, key=actor_mentions.get, reverse=True)[:5]) or "India's neighborhood and external powers"
 
     lines = [
-        "Assessment:",
-        f"The query is most strongly associated with {risk_text}.",
-        f"The closest historical patterns in the dataset are: {analog_titles}.",
-        f"The dominant pressure axis in these analogs is: {focus}.",
+        "🛡️  STRATEGIC INTELLIGENCE ASSESSMENT [ MISSION VAJRA ]",
+        "--------------------------------------------------------",
+        f"The model identifies a primary risk vector centered on {risk_text}.",
+        f"This assessment is derived from historical parallels including: {analog_titles}.",
+        f"The dominant geopolitical pressure axis currently appears to be: {focus}.",
+        "",
+        "📊  THEORETICAL MODELING",
     ]
 
     if top_analogs:
-        lines.append("")
-        lines.append("Why the model matched these cases:")
+        lines.append("By analyzing past incidents, Airavat suggests the following patterns are most relevant:")
         for event, similarity in top_analogs:
+            boost_tag = " [🔥 LIVE BOOST]" if event.event_id in result.boosted_ids else ""
             lines.append(
-                f"- {event.title} [{event.date}, similarity {similarity:.2f}]: {event.summary}"
+                f"• {event.title}{boost_tag} ({event.date})\n"
+                f"  Similarity: {similarity:.2f} | {event.summary[:150]}..."
             )
 
     if result.indicators_to_watch:
         lines.append("")
-        lines.append("Indicators to watch next:")
+        lines.append("👁️  INDICATORS TO WATCH NEXT")
         for indicator in result.indicators_to_watch[:5]:
-            lines.append(f"- {indicator}")
+            lines.append(f"- {indicator.upper()}")
 
     if result.evidence_gaps:
         lines.append("")
-        lines.append("Evidence gaps:")
+        lines.append("⚠️  INTELLIGENCE GAPS & UNCERTAINTY")
         for gap in result.evidence_gaps:
             lines.append(f"- {gap}")
 
@@ -92,7 +96,7 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
 def build_llm_prompt(
     query: str, result: ForecastResult, live_context: str | None = None
 ) -> str:
-    top_analogs = result.analogs[:5]
+    top_analogs = result.analogs
     analog_blocks = []
     for event, similarity in top_analogs:
         analog_blocks.append(

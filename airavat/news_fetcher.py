@@ -97,16 +97,29 @@ def _fetch_feed(feed: dict, ssl_ctx: ssl.SSLContext, timeout: int = 8) -> list[d
     return items
 
 
-def fetch_live_headlines(max_items: int = 8) -> list[dict]:
+def fetch_live_headlines(max_items: int = 8, query: str | None = None) -> list[dict]:
     """
-    Fetch and de-duplicate geopolitically relevant headlines across all feeds.
-    Returns a list of {source, title, link, published} dicts.
+    Fetch and de-duplicate geopolitically relevant headlines.
+    If a query is provided, it searches specifically for that topic.
     """
     ssl_ctx = ssl.create_default_context(cafile=certifi.where())
     seen_titles: set[str] = set()
     results: list[dict] = []
 
-    for feed in RSS_FEEDS:
+    feeds_to_crawl = list(RSS_FEEDS)
+
+    # If query is provided, add a dynamic search feed at the top priority
+    if query:
+        # Clean the query for URL encoding (simple version)
+        import urllib.parse
+        encoded_q = urllib.parse.quote(query)
+        dynamic_feed = {
+            "name": f"Dynamic Search: {query[:30]}...",
+            "url": f"https://news.google.com/rss/search?q={encoded_q}&hl=en-IN&gl=IN&ceid=IN:en",
+        }
+        feeds_to_crawl.insert(0, dynamic_feed)
+
+    for feed in feeds_to_crawl:
         for item in _fetch_feed(feed, ssl_ctx):
             key = item["title"].lower()[:60]
             if key not in seen_titles:
