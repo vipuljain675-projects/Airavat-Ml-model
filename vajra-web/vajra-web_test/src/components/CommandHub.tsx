@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Radar, MessageSquare, Library, Activity, ShieldAlert } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import TacticalRadar from "./TacticalRadar";
 import SignalHub from "./SignalHub";
 import StrategicArchive from "./StrategicArchive";
@@ -36,7 +38,7 @@ export default function CommandHub() {
     setInput("");
 
     try {
-      const response = await fetch("http://localhost:8000/analyze", {
+      const response = await fetch("http://localhost:8005/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: query, include_news: true }),
@@ -200,7 +202,15 @@ export default function CommandHub() {
                                         ? 'bg-cyan-500/10 border border-cyan-500/30 text-white' 
                                         : 'bg-obsidian-800 border border-white/5 text-gray-300'
                                   }`}>
-                                     <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                                     {msg.role === 'user' ? (
+                                        <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                                     ) : (
+                                        <div className="prose prose-invert prose-xs max-w-none">
+                                           <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                              {msg.content}
+                                           </ReactMarkdown>
+                                        </div>
+                                     )}
                                      {msg.data && (
                                         <div className="mt-4 pt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>

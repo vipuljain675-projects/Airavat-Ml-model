@@ -5,15 +5,22 @@ from pathlib import Path
 
 
 def load_dotenv(path: str = ".env") -> None:
-    env_path = Path(path)
-    if not env_path.exists():
-        return
-    for line in env_path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+    # Try CWD, then parent of 'airavat'
+    locations = [
+        Path(path),
+        Path(__file__).parent.parent / ".env",
+        Path("/Users/vipuljain675/Documents/ML PROJECT/.env")
+    ]
+    
+    for env_path in locations:
+        if env_path.exists():
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+            return
 
 
 class GroqClient:

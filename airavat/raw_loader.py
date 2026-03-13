@@ -76,6 +76,8 @@ def load_raw_events(path: str | Path) -> list[StrategicEvent]:
                 outcomes=[],
                 follow_on_risks=[],
                 retaliatory_risks=retaliatory_risks,
+                image=record.get("image"),
+                deep_dive=record.get("deep_dive"),
                 notes="\n".join(countermeasures),
             )
         )

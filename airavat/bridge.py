@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import sys
 import os
 
@@ -51,9 +51,20 @@ async def analyze(request: AnalysisRequest):
             
         result = forecaster.forecast(request.query, live_news=headlines)
         
-        # Build the brief using the explainer logic
-        from airavat.explainer import build_deterministic_brief
-        brief = build_deterministic_brief(request.query, result)
+        # Build the brief
+        from airavat.explainer import build_deterministic_brief, build_llm_prompt
+        from airavat.llm import GroqClient
+        
+        llm = GroqClient()
+        if llm.is_configured():
+            try:
+                prompt = build_llm_prompt(request.query, result)
+                brief = llm.generate(prompt)
+            except Exception as e:
+                print(f"LLM Error: {e}")
+                brief = build_deterministic_brief(request.query, result)
+        else:
+            brief = build_deterministic_brief(request.query, result)
         
         # Format analogs for JSON
         analogs = []
@@ -93,6 +104,8 @@ async def get_records():
                 "actors": event.actors,
                 "regions": event.regions,
                 "event_types": event.event_types,
+                "image": event.image,
+                "deep_dive": event.deep_dive,
                 "notes": event.notes
             })
         return records
@@ -105,4 +118,4 @@ async def health():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8005)

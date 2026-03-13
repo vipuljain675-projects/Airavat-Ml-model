@@ -26,9 +26,31 @@ def load_events(path: str | Path, data_format: str = "auto") -> list[StrategicEv
 
         if errors:
             error_text = "; ".join(errors)
-            raise ValueError(f"Invalid event record #{index}: {error_text}")
+            print(f"Warning: Invalid event record #{index}: {error_text}")
 
         seen_ids.add(record["event_id"])
-        events.append(StrategicEvent(**record))
+        
+        # Intelligent Mapping for Enriched JSON
+        if "scenario" in record and not record.get("summary"):
+            record["summary"] = record["scenario"][:200] + "..."
+        
+        if "category" in record and not record.get("event_types"):
+            # Improved heuristic: match keywords in category
+            cat_text = record["category"].upper()
+            found_types = []
+            for known_type in ["MILITARY", "MARITIME", "DIPLOMATIC", "PROXY", "TECHNOLOGY", "COVERE", "SABOTAGE", "STRATEGIC"]:
+                if known_type in cat_text:
+                    found_types.append(known_type)
+            record["event_types"] = found_types
+
+        if "keywords" in record and not record.get("leading_indicators"):
+            record["leading_indicators"] = record["keywords"].split()
+        
+        # Filter fields to only include those defined in StrategicEvent
+        import dataclasses
+        allowed_fields = {f.name for f in dataclasses.fields(StrategicEvent)}
+        filtered_record = {k: v for k, v in record.items() if k in allowed_fields}
+        
+        events.append(StrategicEvent(**filtered_record))
 
     return events

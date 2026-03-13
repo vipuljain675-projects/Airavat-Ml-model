@@ -24,24 +24,66 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.glass-premium {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
 .cyan-glow {
-  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
 }
 
 .amber-glow {
-  box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+  box-shadow: 0 0 20px rgba(255, 170, 0, 0.2);
+}
+
+/* Custom Scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-premium::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-premium::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+.scrollbar-premium::-webkit-scrollbar-thumb {
+  background: rgba(255, 170, 0, 0.3);
+  border-radius: 10px;
+}
+.scrollbar-premium::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 170, 0, 0.5);
 }
 
 @keyframes scan-line {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(1000%); }
 }
+
+/* War Room Markdown Styling */
+.prose-xs h1 { @apply text-amber-500 font-orbitron text-lg mb-4 uppercase tracking-tighter; }
+.prose-xs h2 { @apply text-cyan-400 font-orbitron text-sm mb-3 uppercase tracking-widest mt-6; }
+.prose-xs h3 { @apply text-white font-bold text-xs mb-2 mt-4; }
+.prose-xs p { @apply text-gray-400 text-xs leading-relaxed mb-4; }
+.prose-xs ul { @apply list-disc list-inside mb-4 text-gray-400 text-xs space-y-1; }
+.prose-xs table { @apply w-full text-[10px] border-collapse mb-4 bg-white/5 rounded-sm overflow-hidden; }
+.prose-xs th { @apply bg-white/10 text-cyan-400 p-2 text-left uppercase font-bold; }
+.prose-xs td { @apply p-2 border-t border-white/5 text-gray-300; }
+.prose-xs blockquote { @apply border-l-2 border-amber-500 pl-4 italic text-gray-500 my-4; }
+.prose-xs strong { @apply text-white font-bold; }
 
 .scanner::after {
   content: "";
@@ -53,4 +95,12 @@ body {
   background: linear-gradient(90deg, transparent, var(--color-cyan-vibrant), transparent);
   animation: scan-line 4s linear infinite;
   opacity: 0.5;
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
 }

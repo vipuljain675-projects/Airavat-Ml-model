@@ -9,6 +9,7 @@ from airavat.training import predict_risk_scores, train_risk_model
 
 
 RISK_BUCKET_MAP = {
+    # Legacy keys
     "diplomatic_pressure": "diplomatic_pressure",
     "economic_coercion": "economic_coercion",
     "technology_denial": "technology_denial",
@@ -21,6 +22,17 @@ RISK_BUCKET_MAP = {
     "supply_chain_disruption": "supply_chain_pressure",
     "border_escalation": "military_signaling",
     "maritime_competition": "military_signaling",
+    
+    # New Strategic Database keys (Case-insensitive support)
+    "MILITARY": "military_signaling",
+    "MARITIME": "military_signaling",
+    "DIPLOMATIC": "diplomatic_pressure",
+    "PROXY": "proxy_destabilization",
+    "TECHNOLOGY": "technology_denial",
+    "COVERT": "proxy_destabilization",
+    "SABOTAGE": "proxy_destabilization",
+    "STRATEGIC": "diplomatic_pressure",
+    "SOVEREIGNTY": "diplomatic_pressure",
 }
 
 
@@ -142,9 +154,9 @@ class RiskForecaster:
         gaps: list[str] = []
         query_lower = query.lower()
 
-        if not analogs or analogs[0][1] < 0.10:
+        if not analogs or analogs[0][1] < 0.05:
             gaps.append("No strong historical analog was found for this query.")
-        elif analogs[0][1] < 0.20:
+        elif analogs[0][1] < 0.12:
             gaps.append("Note: Moderate match found. Results should be viewed as suggestive rather than high-confidence analogs.")
 
         if not re.search(r"\b\d+\s*(day|days|week|weeks|month|months|year|years)\b", query_lower):

@@ -9,12 +9,17 @@ REQUIRED_FIELDS = {
     "title": str,
     "summary": str,
     "actors": list,
-    "targets": list,
     "regions": list,
+}
+
+OPTIONAL_FIELDS = {
+    "targets": list,
     "event_types": list,
     "source_refs": list,
     "source_reliability": int,
     "confidence": (int, float),
+    "image": str,
+    "deep_dive": dict,
 }
 
 

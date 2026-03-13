@@ -18,7 +18,7 @@ export default function SignalHub() {
   const fetchNews = async () => {
     try {
       // Use the existing bridge endpoint to fetch live news context
-      const response = await fetch("http://localhost:8000/analyze", {
+      const response = await fetch("http://localhost:8005/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: "India Geopolitics", include_news: true }),
