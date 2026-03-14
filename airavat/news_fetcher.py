@@ -110,11 +110,28 @@ def fetch_live_headlines(max_items: int = 8, query: str | None = None) -> list[d
 
     # If query is provided, add a dynamic search feed at the top priority
     if query:
-        # Clean the query for URL encoding (simple version)
+        # Extract keywords by removing conversational stop words so Google News RSS actually returns results
+        import re
+        stop_words = {
+            "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", 
+            "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", 
+            "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", 
+            "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", 
+            "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", 
+            "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", 
+            "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", 
+            "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", 
+            "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", 
+            "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", "problem", "going", "impact", 
+            "falls", "apart", "fuck", "last", "days", "pls", "catch", "man", "oh", "saying", "like"
+        }
+        words = [w for w in re.findall(r'\b[a-zA-Z0-9-]+\b', query) if w.lower() not in stop_words and len(w) > 2]
+        search_term = " ".join(words) if words else query
+
         import urllib.parse
-        encoded_q = urllib.parse.quote(query)
+        encoded_q = urllib.parse.quote(search_term)
         dynamic_feed = {
-            "name": f"Dynamic Search: {query[:30]}...",
+            "name": f"Dynamic Search: {search_term[:30]}...",
             "url": f"https://news.google.com/rss/search?q={encoded_q}&hl=en-IN&gl=IN&ceid=IN:en",
         }
         feeds_to_crawl.insert(0, dynamic_feed)

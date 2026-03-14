@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Orbitron } from "next/font/google";
+import { AudioProvider } from "@/components/GlobalAudioContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,8 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${orbitron.variable}`}>
       <body className="bg-obsidian-950 text-white antialiased" suppressHydrationWarning>
-        <div className="fixed inset-0 pointer-events-none opacity-[0.03] scanner overflow-hidden"></div>
-        {children}
+        <AudioProvider>
+          <div className="fixed inset-0 pointer-events-none opacity-[0.03] scanner overflow-hidden"></div>
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );
