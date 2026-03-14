@@ -49,16 +49,19 @@ async def analyze(request: AnalysisRequest):
             # Use the correct function name
             headlines = fetch_live_headlines(query=request.query)
             
-        result = forecaster.forecast(request.query, live_news=headlines)
+        result = forecaster.forecast(request.query, top_k=5, live_news=headlines)
         
-        # Build the brief
+        # Build the brief — pass live news into the prompt so LLM can analyze each article
         from airavat.explainer import build_deterministic_brief, build_llm_prompt
         from airavat.llm import GroqClient
-        
+        from airavat.news_fetcher import format_news_context
+
+        live_context = format_news_context(headlines) if headlines else None
+
         llm = GroqClient()
         if llm.is_configured():
             try:
-                prompt = build_llm_prompt(request.query, result)
+                prompt = build_llm_prompt(request.query, result, live_context=live_context)
                 brief = llm.generate(prompt)
             except Exception as e:
                 print(f"LLM Error: {e}")
@@ -66,11 +69,15 @@ async def analyze(request: AnalysisRequest):
         else:
             brief = build_deterministic_brief(request.query, result)
         
-        # Format analogs for JSON
+        # Format analogs for JSON — use category as title fallback, 'Ongoing' as date fallback
         analogs = []
         for event, score in result.analogs:
+            display_title = event.title if event.title != "Classified Event" else (event.scenario[:80] or " / ".join(event.event_types) or "Strategic Event")
+            display_date = event.date if event.date != "1900-01-01" else "Ongoing"
             analogs.append({
                 "id": event.event_id,
+                "title": display_title,
+                "date": display_date,
                 "category": "/".join(event.event_types),
                 "scenario": event.summary,
                 "similarity": round(float(score), 3)

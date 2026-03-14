@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import TacticalRadar from "./TacticalRadar";
 import SignalHub from "./SignalHub";
 import StrategicArchive from "./StrategicArchive";
+import VajraSplash from "./VajraSplash";
 
 const tabs = [
   { id: "radar", label: "Tactical Radar", icon: Radar },
@@ -22,11 +23,6 @@ export default function CommandHub() {
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowWelcome(false), 3500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -66,33 +62,10 @@ export default function CommandHub() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      {/* ... (Welcome Overlay remains same) ... */}
+    <main className="min-h-screen flex flex-col items-center bg-black text-white">
       <AnimatePresence>
         {showWelcome && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5, duration: 1 }}
-              className="text-center"
-            >
-              <div className="flex justify-center mb-6">
-                <ShieldAlert className="w-16 h-16 text-cyan-400 rotate-12" />
-              </div>
-              <h1 className="font-orbitron text-2xl md:text-4xl tracking-widest text-white mb-2">
-                MISSION VAJRA ACTIVE
-              </h1>
-              <p className="text-cyan-400/80 font-mono tracking-tighter uppercase">
-                Authenticating Strategic Analyst Session...
-              </p>
-            </motion.div>
-          </motion.div>
+          <VajraSplash onComplete={() => setShowWelcome(false)} />
         )}
       </AnimatePresence>
 
@@ -224,11 +197,15 @@ export default function CommandHub() {
                                             </div>
                                             <div>
                                                <p className="text-[10px] text-amber-500 uppercase tracking-widest mb-2 font-bold">Top Analogs</p>
-                                               {msg.data.top_analogs.slice(0, 3).map((a: any) => (
-                                                  <div key={a.id} className="text-[10px] mb-1 text-gray-400 border-b border-white/5 pb-1">
-                                                     {a.category} ({a.similarity})
-                                                  </div>
-                                               ))}
+                                                {msg.data.top_analogs.slice(0, 3).map((a: any) => (
+                                                   <div key={a.id} className="text-[10px] mb-2 text-gray-400 border-b border-white/5 pb-1">
+                                                      <p className="text-gray-200 font-semibold truncate">{a.title || a.category}</p>
+                                                      <div className="flex justify-between mt-0.5">
+                                                        <span className="text-cyan-500/60">{a.date}</span>
+                                                        <span className="text-amber-400">{(a.similarity * 100).toFixed(1)}% match</span>
+                                                      </div>
+                                                   </div>
+                                                ))}
                                             </div>
                                         </div>
                                      )}

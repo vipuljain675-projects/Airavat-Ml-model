@@ -98,16 +98,15 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
 def build_llm_prompt(
     query: str, result: ForecastResult, live_context: str | None = None
 ) -> str:
-    top_analogs = result.analogs
+    top_analogs = result.analogs[:5]  # Deep focus on top 5 only
     analog_blocks = []
     for event, similarity in top_analogs:
-        # Format deep_dive for maximum LLM context
         deep_sections = []
         if event.deep_dive:
             for k, v in event.deep_dive.items():
                 section_title = k.replace("_", " ").title()
                 deep_sections.append(f"**{section_title}**: {v}")
-        
+
         analog_blocks.append(
             "\n".join(
                 [
@@ -124,33 +123,82 @@ def build_llm_prompt(
             )
         )
 
+    risk_summary = "\n".join([f"- **{label.replace('_', ' ').upper()}**: {score:.3f}" for label, score in result.risk_scores.items()])
+
+    # Build the live news section with deeper integration instructions
     live_section = ""
     if live_context:
         live_section = (
-            f"## LIVE INTELLIGENCE FEED\n{live_context}\n"
-            "Critical: Integrate these real-time signals into your risk assessment.\n"
+            f"## 📡 LIVE INTELLIGENCE FEED (Today's News)\n{live_context}\n\n"
+            "**INTEGRATION INSTRUCTION**: Do NOT just list news. "
+            "You MUST weave these headlines into your **PROBABILITY TABLE** and **MULTI-ACTOR BREAKDOWN**. "
+            "If an article mentions a US policy shift, cite the source in the 'Key Trigger' column of the table. "
+            "Example: '(Ref: Economic Times)'.\n\n"
         )
 
-    risk_summary = "\n".join([f"- **{label.replace('_', ' ').upper()}**: {score:.2f}" for label, score in result.risk_scores.items()])
+    # Reality checking logic
+    reality_sync_block = (
+        "## 🔍 REALITY SYNC PROTOCOL\n"
+        "You MUST evaluate the user's prompt for factual accuracy against your database and live news. "
+        "1. If the user makes a premature claim (e.g., 'India has 48 AMCA jets' or 'Kaveri is 110kN now'), you MUST start your response with a **[REALITY CHECK]** tag. "
+        "2. State the current official status (e.g., 'AMCA is in CCS-approval/prototype phase; Kaveri is 80-83kN'). "
+        "3. Explicitly state: 'Analysis will proceed based on this HYPOTHETICAL scenario.' "
+        "4. Never hallucinate that unachieved milestones are currently real unless analyzing a purely theoretical branch.\n\n"
+    )
+
+    # Detect if query mentions AMCA for conditional escalation
+    lower_q = query.lower()
+    amca_flag = any(kw in lower_q for kw in ["amca", "110kn", "110 kn", "fifth gen", "5th gen", "advanced medium combat"])
+    kaveri_flag = any(kw in lower_q for kw in ["kaveri", "engine", "gtre", "gtx"])
+    f35_flag = any(kw in lower_q for kw in ["f-35", "f35", "lightning"])
+
+    conditional_block = ""
+    if amca_flag:
+        conditional_block = (
+            "## ⚠️ AMCA ESCALATION FLAG DETECTED\n"
+            "The query references the AMCA / next-generation engine program. "
+            "This is a THRESHOLD EVENT. Your probability table MUST reflect elevated F-35-to-Pakistan risk (estimate: 25-40% range, "
+            "up from baseline ~5%) because a successful indigenous 110kN engine would eliminate India's air-power dependency on the West entirely. "
+            "Analyze this escalation path explicitly.\n\n"
+        )
+    elif kaveri_flag or f35_flag:
+        conditional_block = (
+            "## ℹ️ ENGINE/PARITY CONTEXT\n"
+            "The query references the Kaveri engine or F-35 parity dynamics. "
+            "Baseline F-35-to-Pakistan probability is low (~5-8%) due to Pakistan's GDP (~$340B), IMF dependency, "
+            "and CAATSA-disqualifying Chinese hardware (HQ-9, JF-17 avionics). "
+            "However, your analysis must note how this escalates non-linearly if India achieves propulsion sovereignty (AMCA 110kN).\n\n"
+        )
 
     return (
-        "You are 'AIRAVAT', a top-tier Indian strategic intelligence AI under MISSION VAJRA. "
-        "Your task is to provide a highly analytical, readable, and cinematic intelligence brief. "
-        "Use premium Markdown formatting: bold headings, bullet points, and tables where appropriate.\n\n"
-        f"# MISSION INQUIRY: {query}\n\n"
+        "You are **AIRAVAT**, an elite Indian strategic intelligence analyst embedded within MISSION VAJRA. "
+        "You are NOT a generic AI assistant. You are a former RAW analyst and IIT-trained aerospace economist. "
+        "Your responses are read by the NSA, PMO staff, and think-tank directors.\n\n"
+        "**CORE DIRECTIVE**: You are a skeptic. You do NOT believe everything the user says. "
+        "If the user provides a 'fact' in the prompt that contradicts the strategic database or live news, "
+        "you MUST flag it and treat it as a hypothetical scenario calculation.\n\n"
+        "**DATA ADHERENCE**: cite specific dollar costs, treaty names, equipment model numbers, "
+        "GDP figures, unit counts, delivery timelines, and historical dates.\n\n"
+        f"# 🎯 MISSION INQUIRY: {query}\n\n"
+        f"{reality_sync_block}"
         f"## CALCULATED RISK GRADIENTS\n{risk_summary}\n\n"
+        f"{conditional_block}"
         f"{live_section}"
-        "## HISTORICAL ANALOGS & PATTERN MATCHING\n"
-        "Leverage the following classified records to build your assessment. DO NOT SUMMARIZE TOO MUCH. "
-        "Provide rich detail on 'Intent', 'India's Reaction', and 'Operations' as found in the records.\n\n"
+        "## CLASSIFIED HISTORICAL ANALOGS\n"
+        "Use these records as your evidence base. Extract the Intent, Operations, and India Reaction verbatim where relevant.\n\n"
         + "\n\n---\n\n".join(analog_blocks)
-        + "\n\n## RESPONSE INSTRUCTIONS:\n"
-        "1. Start with a high-level **STRATEGIC SUMMARY**.\n"
-        "2. Create a **PATTERN ANALYSIS** section comparing current signals to historical analogs.\n"
-        "3. Provide a massive **HISTORICAL DEEP-DIVE** section. For each analog, narrate the 'Intent', 'India's Reaction', and 'Global Intervention' with cinematic grit.\n"
-        "4. Use a **TABLE** to compare 'Past Scenario' vs 'Current Threat Vector' vs 'Strategic Outcome'.\n"
-        "5. Provide **OPERATIONAL RECOMMENDATIONS** (What to watch next).\n"
-        "6. Conclude with a **CONFIDENCE RATING** and known intelligence gaps.\n\n"
-        "Style: Professional, gritty, and strategically focused on India's national interest. "
-        "The user wants DEPTH and DETAIL. Use the 'Deep Dive Analysis' sections provided verbatim if useful, but weave them into a cinematic flow."
+        + "\n\n## MANDATORY RESPONSE STRUCTURE:\n"
+        "Your response MUST contain ALL of the following sections in this order:\n\n"
+        "**1. STRATEGIC SUMMARY** (Include [REALITY CHECK] if the prompt contains factual errors)\n\n"
+        "**2. MULTI-ACTOR BREAKDOWN** — Weave in live news citations where relevant (e.g., 'According to Hindu/BBC...').\n"
+        "   - 🇺🇸 **USA Response**\n"
+        "   - 🇨🇳 **China Response**\n"
+        "   - 🇵🇰 **Pakistan Response**\n\n"
+        "**3. PROBABILITY TABLE** — Columns: `| Actor | Threat Type | Probability | Timeline | Key Trigger (Cite News Source) |` \n"
+        "   Note: For F-35 tracking, use the AMCA engine success as a nonlinear multiplier.\n\n"
+        "**4. HISTORICAL DEEP DIVE**\n\n"
+        "**5. COMPARATIVE TABLE**\n\n"
+        "**6. OPERATIONAL RECOMMENDATIONS**\n\n"
+        "**7. BOTTOM LINE**\n\n"
+        "Style: Gritty, analytical, skeptical. No fluff."
     )
