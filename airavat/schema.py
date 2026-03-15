@@ -5,6 +5,11 @@ from typing import Any
 
 REQUIRED_FIELDS = {
     "event_id": str,
+}
+
+# These are required for classic-format records, but optional for scenario-style records
+# (scenario-style records use 'scenario', 'category', 'keywords' instead)
+CLASSIC_FIELDS = {
     "date": str,
     "title": str,
     "summary": str,
@@ -26,15 +31,23 @@ OPTIONAL_FIELDS = {
 def validate_event_record(record: dict[str, Any]) -> list[str]:
     errors: list[str] = []
 
+    # event_id is always required
     for field_name, expected_type in REQUIRED_FIELDS.items():
         if field_name not in record:
             errors.append(f"missing required field '{field_name}'")
             continue
-
         if not isinstance(record[field_name], expected_type):
             errors.append(
                 f"field '{field_name}' must be {expected_type}, got {type(record[field_name])}"
             )
+
+    # For classic-format records (have title/summary), validate those fields
+    # Scenario-style records (have scenario/category) are also valid — skip these warnings
+    is_scenario_style = ("scenario" in record or "category" in record) and not record.get("title")
+    if not is_scenario_style:
+        for field_name, expected_type in CLASSIC_FIELDS.items():
+            if field_name not in record:
+                errors.append(f"missing required field '{field_name}'")
 
     confidence = record.get("confidence")
     if isinstance(confidence, (int, float)) and not 0.0 <= float(confidence) <= 1.0:

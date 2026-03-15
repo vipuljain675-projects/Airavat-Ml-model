@@ -31,20 +31,52 @@ def load_events(path: str | Path, data_format: str = "auto") -> list[StrategicEv
         seen_ids.add(record["event_id"])
         
         # Intelligent Mapping for Enriched JSON
-        if "scenario" in record and not record.get("summary"):
-            record["summary"] = record["scenario"][:200] + "..."
-        
+        scenario_text = record.get("scenario", "") or ""
+        if scenario_text and not record.get("summary"):
+            # Use first 200 chars of scenario as summary
+            record["summary"] = scenario_text[:200].rstrip() + "..."
+
+        # Generate a title from scenario first sentence or category name
+        if not record.get("title") and scenario_text:
+            first_sentence = scenario_text.split(".")[0].strip()
+            record["title"] = first_sentence[:90] if len(first_sentence) > 5 else record.get("category", "Classified Event")
+        elif not record.get("title") and record.get("category"):
+            record["title"] = record["category"]
+
         if "category" in record and not record.get("event_types"):
-            # Improved heuristic: match keywords in category
+            # Match keywords in category — fixed COVERE → COVERT
             cat_text = record["category"].upper()
             found_types = []
-            for known_type in ["MILITARY", "MARITIME", "DIPLOMATIC", "PROXY", "TECHNOLOGY", "COVERE", "SABOTAGE", "STRATEGIC"]:
+            for known_type in ["MILITARY", "MARITIME", "DIPLOMATIC", "PROXY", "TECHNOLOGY", "COVERT", "SABOTAGE", "STRATEGIC", "SOVEREIGNTY"]:
                 if known_type in cat_text:
                     found_types.append(known_type)
-            record["event_types"] = found_types
+            # Also map common category patterns
+            if "ENCIRCLEMENT" in cat_text or "REGIME" in cat_text:
+                found_types.append("PROXY")
+            if "ENERGY" in cat_text or "VENEZUELA" in cat_text:
+                found_types.append("DIPLOMATIC")
+            record["event_types"] = found_types if found_types else ["STRATEGIC"]
 
         if "keywords" in record and not record.get("leading_indicators"):
             record["leading_indicators"] = record["keywords"].split()
+
+        # Extract actor names from keywords if actors field is missing
+        if not record.get("actors") and record.get("keywords"):
+            kw_lower = record["keywords"].lower()
+            found_actors = []
+            actor_map = {
+                "sheikh hasina": "Sheikh Hasina", "bangladesh": "Bangladesh",
+                "tarique": "Tarique Rahman", "maduro": "Nicolas Maduro",
+                "venezuela": "Venezuela", "trump": "USA", "cia": "CIA",
+                "china": "China", "pakistan": "Pakistan", "usa": "USA",
+                "iran": "Iran", "israel": "Israel", "russia": "Russia",
+                "imran khan": "Imran Khan", "modi": "India",
+            }
+            for kw, actor in actor_map.items():
+                if kw in kw_lower and actor not in found_actors:
+                    found_actors.append(actor)
+            if found_actors:
+                record["actors"] = found_actors
         
         # Filter fields to only include those defined in StrategicEvent
         import dataclasses

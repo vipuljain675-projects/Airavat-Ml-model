@@ -58,7 +58,8 @@ class RiskForecaster:
             total_weight += weight
 
             for event_type in event.event_types:
-                bucket = RISK_BUCKET_MAP.get(event_type)
+                # Try uppercase first (for JSON category-derived types), then original
+                bucket = RISK_BUCKET_MAP.get(event_type.upper()) or RISK_BUCKET_MAP.get(event_type)
                 if bucket:
                     score_counter[bucket] += weight
 

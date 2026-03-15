@@ -65,8 +65,12 @@ def _extract_india_interests(events: list[tuple[StrategicEvent, float]]) -> list
         for key in ("india_status_at_moment", "india_reaction", "present_threat_comparison"):
             value = deep.get(key)
             if isinstance(value, str) and value.strip():
-                candidates.append(_clean_snippet(value, 160))
-        for text in (event.summary, event.scenario, event.notes):
+                candidates.append(_clean_snippet(value, 200))
+        # Also pull from scenario text directly — most scenario events have no deep_dive
+        scenario = getattr(event, 'scenario', '') or ''
+        if scenario and ("india" in scenario.lower() or "chabahar" in scenario.lower() or "pakistan" in scenario.lower()):
+            candidates.append(_clean_snippet(scenario, 250))
+        for text in (event.summary, event.notes):
             if text and ("india" in text.lower() or "chabahar" in text.lower() or "pakistan" in text.lower()):
                 candidates.append(_clean_snippet(text, 160))
     return _dedupe_preserve(candidates)[:5]
@@ -211,13 +215,19 @@ def _analog_packet(events: list[tuple[StrategicEvent, float]]) -> str:
     rows: list[str] = []
     for event, similarity in events[:3]:
         deep = event.deep_dive or {}
+        # Use full scenario text — this is where the real intelligence lives
+        scenario_text = getattr(event, 'scenario', '') or event.summary or ''
+        countermeasures = getattr(event, 'countermeasures', []) or []
+        keywords_text = getattr(event, 'keywords', '') or ''
         rows.append(
             "\n".join(
                 [
                     f"- [{event.event_id}] {event.title} | score={similarity:.3f} | date={event.date}",
-                    f"  Summary: {_clean_snippet(event.summary or event.scenario, 170)}",
-                    f"  Intent: {_clean_snippet(str(deep.get('intent', 'Not specified')), 150)}",
-                    f"  India Angle: {_clean_snippet(str(deep.get('india_reaction') or deep.get('india_status_at_moment') or 'Not specified'), 150)}",
+                    f"  Scenario/Context: {_clean_snippet(scenario_text, 1600)}",
+                    f"  Key Data Points: {keywords_text[:400]}" if keywords_text else "",
+                    f"  Intent: {_clean_snippet(str(deep.get('intent', 'See scenario above')), 400)}",
+                    f"  India Angle: {_clean_snippet(str(deep.get('india_reaction') or deep.get('india_status_at_moment') or 'See scenario above'), 400)}",
+                    f"  Key Countermeasures: {' | '.join(_clean_snippet(c, 300) for c in countermeasures[:3]) if countermeasures else 'None specified'}",
                 ]
             )
         )
@@ -367,7 +377,9 @@ def build_llm_prompt(
         "4. If the user states a questionable fact, label it `[Reality check]` and separate current reality from hypothetical analysis.\n"
         "5. Prefer bounded language: `likely`, `possible`, `cannot confirm from current evidence`.\n"
         "6. Never fabricate exact probabilities for specific actor actions unless the prompt provides evidence for them. Use qualitative bands instead: Low / Medium / High.\n"
-        "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n\n"
+        "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n"
+        "8. CRITICAL: When the evidence packet contains specific figures, percentages, deal names, or program names (e.g. '18% tariff', 'Shadow Fleet', 'CAATSA', 'Rs 4,000 crore'), you MUST quote them precisely and verbatim. Do NOT paraphrase '18% tariff' as 'severe tariffs'. Do NOT paraphrase 'Shadow Fleet' as 'alternative routes'. Use the exact language from the evidence.\n"
+        "9. CRITICAL: If the evidence packet mentions assassinations, plane crashes, kinetic sabotage, or 'SCIENTIST SHIELDING' (e.g., the Homi Bhabha precedent), you MUST highlight this severe threat explicitly in the 'India-First Answer' and 'Bottom Line'. Do not sanitize or ignore kinetic threats.\n\n"
         f"QUERY\n{query}\n\n"
         f"QUERY MODE: {mode.upper()}\n"
         f"EVIDENCE STRENGTH: {evidence_strength}\n"
