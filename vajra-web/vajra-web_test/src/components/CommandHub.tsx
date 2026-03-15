@@ -5,16 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Radar, MessageSquare, Library, Activity, ShieldAlert } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import TacticalRadar from "./TacticalRadar";
-import SignalHub from "./SignalHub";
 import StrategicArchive from "./StrategicArchive";
 import VajraSplash from "./VajraSplash";
 
 const tabs = [
-  { id: "radar", label: "Tactical Radar", icon: Radar },
   { id: "warroom", label: "War Room", icon: MessageSquare },
   { id: "archive", label: "Strategic Archive", icon: Library },
-  { id: "signal", label: "Signal Analyzer", icon: Activity },
 ];
 
 export default function CommandHub() {
@@ -256,18 +252,6 @@ export default function CommandHub() {
                          </div>
                       </div>
                    </div>
-                </div>
-             )}
-
-             {activeTab === 'radar' && (
-                <div className="h-[75vh]">
-                   <TacticalRadar />
-                </div>
-             )}
-
-             {activeTab === 'signal' && (
-                <div className="h-[75vh]">
-                   <SignalHub />
                 </div>
              )}
 
