@@ -178,11 +178,21 @@ export default function CommandHub() {
                                      {msg.role === 'user' ? (
                                         <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                                      ) : (
-                                        <div className="prose prose-invert prose-xs max-w-none">
-                                           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                              {msg.content}
-                                           </ReactMarkdown>
-                                        </div>
+                                        <>
+                                           {msg.data?.response_source !== "groq" && (
+                                              <div className="mb-4 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-200">
+                                                 <p className="font-bold uppercase tracking-wider text-amber-400">LLM Fallback Active</p>
+                                                 <p className="mt-1 text-amber-100/90">
+                                                    {msg.data?.llm_error || "Groq response unavailable. Showing deterministic fallback brief."}
+                                                 </p>
+                                              </div>
+                                           )}
+                                           <div className="prose prose-invert prose-xs max-w-none">
+                                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                 {msg.content}
+                                              </ReactMarkdown>
+                                           </div>
+                                        </>
                                      )}
                                      {msg.data && (
                                         <div className="mt-4 pt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -34,6 +34,8 @@ class AnalysisResponse(BaseModel):
     intelligence_brief: str
     live_news: List[dict]
     sovereignty_score: float = 5.5
+    response_source: str = "deterministic"
+    llm_error: Optional[str] = None
 
 @app.post("/analyze", response_model=AnalysisResponse)
 async def analyze(request: AnalysisRequest):
@@ -59,14 +61,20 @@ async def analyze(request: AnalysisRequest):
         live_context = format_news_context(headlines) if headlines else None
 
         llm = GroqClient()
+        response_source = "deterministic"
+        llm_error: Optional[str] = None
         if llm.is_configured():
             try:
                 prompt = build_llm_prompt(request.query, result, live_context=live_context)
-                brief = llm.generate(prompt)
+                allowed_sources = [headline["source"] for headline in headlines]
+                brief = llm.generate(prompt, allowed_sources=allowed_sources)
+                response_source = "groq"
             except Exception as e:
-                print(f"LLM Error: {e}")
+                llm_error = str(e)
+                print(f"LLM Error: {llm_error}")
                 brief = build_deterministic_brief(request.query, result)
         else:
+            llm_error = "GROQ_API_KEY is not configured in the bridge process."
             brief = build_deterministic_brief(request.query, result)
         
         # Format analogs for JSON — use category as title fallback, 'Ongoing' as date fallback
@@ -88,7 +96,9 @@ async def analyze(request: AnalysisRequest):
             risk_scores=result.risk_scores,
             top_analogs=analogs,
             intelligence_brief=brief,
-            live_news=[{"title": h["title"], "url": h["link"], "source": h["source"]} for h in headlines]
+            live_news=[{"title": h["title"], "url": h["link"], "source": h["source"]} for h in headlines],
+            response_source=response_source,
+            llm_error=llm_error,
         )
     except Exception as e:
         import traceback
@@ -107,13 +117,23 @@ async def get_records():
                 "id": event.event_id,
                 "title": event.title,
                 "summary": event.summary,
+                "scenario": event.scenario,
                 "date": event.date,
                 "actors": event.actors,
+                "targets": event.targets,
                 "regions": event.regions,
                 "event_types": event.event_types,
                 "image": event.image,
                 "deep_dive": event.deep_dive,
-                "notes": event.notes
+                "notes": event.notes,
+                "keywords": event.keywords,
+                "leading_indicators": event.leading_indicators,
+                "follow_on_risks": event.follow_on_risks,
+                "retaliatory_risks": event.retaliatory_risks,
+                "countermeasures": event.countermeasures,
+                "source_refs": event.source_refs,
+                "source_reliability": event.source_reliability,
+                "confidence": event.confidence,
             })
         return records
     except Exception as e:

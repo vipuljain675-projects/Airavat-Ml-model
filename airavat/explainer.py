@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import re
 
 from airavat.models import ForecastResult, StrategicEvent
 
@@ -37,6 +38,190 @@ def build_timeline(result: ForecastResult) -> str:
     if not analogs:
         return "No timeline could be built because no relevant historical analogs were found."
     return "Timeline:\n" + "\n".join(_event_lines(analogs))
+
+
+def _query_mode(query: str) -> str:
+    q = query.lower()
+    if any(term in q for term in ("coordinate", "coordination", "same page", "alignment", "overlap", "diverge")):
+        return "alignment"
+    if any(term in q for term in ("if ", "assume", "already has", "what if", "falls", "collapse")):
+        return "counterfactual"
+    if any(term in q for term in ("sanction", "tariff", "pressure", "coercion", "control", "leverage")):
+        return "pressure"
+    return "standard"
+
+
+def _clean_snippet(text: str, limit: int = 220) -> str:
+    text = re.sub(r"\s+", " ", text or "").strip()
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3].rstrip() + "..."
+
+
+def _extract_india_interests(events: list[tuple[StrategicEvent, float]]) -> list[str]:
+    candidates: list[str] = []
+    for event, _ in events:
+        deep = event.deep_dive or {}
+        for key in ("india_status_at_moment", "india_reaction", "present_threat_comparison"):
+            value = deep.get(key)
+            if isinstance(value, str) and value.strip():
+                candidates.append(_clean_snippet(value, 160))
+        for text in (event.summary, event.scenario, event.notes):
+            if text and ("india" in text.lower() or "chabahar" in text.lower() or "pakistan" in text.lower()):
+                candidates.append(_clean_snippet(text, 160))
+    return _dedupe_preserve(candidates)[:5]
+
+
+def _extract_adversary_objectives(events: list[tuple[StrategicEvent, float]]) -> list[str]:
+    candidates: list[str] = []
+    for event, _ in events:
+        deep = event.deep_dive or {}
+        intent = deep.get("intent")
+        operations = deep.get("operations")
+        if isinstance(intent, str) and intent.strip():
+            candidates.append(_clean_snippet(intent, 160))
+        if isinstance(operations, str) and operations.strip():
+            candidates.append(_clean_snippet(operations, 160))
+        if event.summary:
+            candidates.append(_clean_snippet(event.summary, 150))
+    return _dedupe_preserve(candidates)[:5]
+
+
+def _extract_constraints(events: list[tuple[StrategicEvent, float]]) -> list[str]:
+    candidates: list[str] = []
+    for event, _ in events:
+        for item in event.retaliatory_risks[:3]:
+            candidates.append(_clean_snippet(item, 140))
+        for item in event.countermeasures[:2]:
+            if any(term in item.lower() for term in ("sanction", "tariff", "supply", "energy", "diplomatic", "financial", "export", "engine")):
+                candidates.append(_clean_snippet(item, 140))
+    return _dedupe_preserve(candidates)[:6]
+
+
+def _extract_red_lines(events: list[tuple[StrategicEvent, float]]) -> list[str]:
+    candidates: list[str] = []
+    for event, _ in events:
+        text = " ".join(
+            [
+                event.summary,
+                event.scenario,
+                event.notes,
+                " ".join(event.countermeasures),
+                " ".join(event.retaliatory_risks),
+            ]
+        ).lower()
+        if "pakistan" in text and any(term in text for term in ("f-35", "f16", "stealth", "parity")):
+            candidates.append("Any US-enabled Pakistan airpower jump is a direct India red line.")
+        if "chabahar" in text or "instc" in text:
+            candidates.append("Loss of Chabahar or INSTC access is a strategic red line for India.")
+        if any(term in text for term in ("oil", "energy", "shipping", "strait", "crude")):
+            candidates.append("External control over India's energy access raises a sovereignty red line.")
+        if any(term in text for term in ("sanction", "caatsa", "tariff", "embargo")):
+            candidates.append("Sanctions pressure aimed at Indian strategic autonomy is a red-line coercion pattern.")
+    return _dedupe_preserve(candidates)[:4]
+
+
+def _primary_actor_assessment(events: list[tuple[StrategicEvent, float]]) -> str:
+    actor_weights: dict[str, float] = {}
+    for event, similarity in events:
+        for actor in event.actors:
+            key = actor.upper().strip()
+            actor_weights[key] = actor_weights.get(key, 0.0) + similarity
+
+    ordered = sorted(actor_weights.items(), key=lambda item: item[1], reverse=True)
+    if not ordered:
+        return "No primary external actor is explicit in the current analog set."
+
+    actor, weight = ordered[0]
+    if actor in {"INDIA", "UNKNOWN"} and len(ordered) > 1:
+        actor, weight = ordered[1]
+
+    if actor == "USA":
+        return (
+            f"Primary coercing actor: USA (weight {weight:.2f}). "
+            "If you generalize this into vague 'regional instability', you are ignoring the evidence packet."
+        )
+    if actor == "CHINA":
+        return f"Primary coercing actor: China (weight {weight:.2f}). Name it directly."
+    if actor == "PAKISTAN":
+        return f"Primary coercing actor: Pakistan (weight {weight:.2f}). Name it directly."
+    return f"Primary external actor in the analog set: {actor} (weight {weight:.2f}). Name it directly if relevant."
+
+
+def _pattern_library(query: str, analogs: list[tuple[StrategicEvent, float]]) -> list[str]:
+    q = query.lower()
+    patterns: list[str] = []
+    for event, similarity in analogs[:8]:
+        corpus = " ".join(
+            [
+                event.event_id,
+                event.title,
+                event.summary,
+                event.scenario,
+                event.notes,
+                " ".join(event.leading_indicators),
+                " ".join(event.countermeasures),
+            ]
+        ).lower()
+
+        if any(term in q for term in ("iran", "chabahar", "buffer", "china", "oil", "energy")):
+            if event.event_id in {"GEO-BUFFER-001", "OP-EPIC-FURY-001", "ENERGY-COERCION-001", "HIST-1971-001"}:
+                patterns.append(
+                    f"[{event.event_id}] Buffer-state collapse / energy leverage pattern (score {similarity:.2f})"
+                )
+            if "pakistan" in corpus and any(term in corpus for term in ("proxy", "western flank", "hostile proxy", "parity")):
+                patterns.append(
+                    f"[{event.event_id}] Pakistan gains space when India's buffer erodes (score {similarity:.2f})"
+                )
+
+        if any(term in q for term in ("kaveri", "engine", "scientist", "amca", "drdo", "breakthrough", "83")):
+            if event.event_id in {"COVERT-SAB-001", "COVERT-ASSASSIN-002", "INTEL-HONEYTRAP-001", "AERO-SABOTAGE-001", "MIL-EXPORT-PRESSURE-001"}:
+                patterns.append(
+                    f"[{event.event_id}] Strategic-breakthrough sabotage / coercion pattern (score {similarity:.2f})"
+                )
+            if any(term in corpus for term in ("honey trap", "scientist", "bhabha", "sabotage", "cia", "blackmail")):
+                patterns.append(
+                    f"[{event.event_id}] Scientist-targeting or compromise precedent (score {similarity:.2f})"
+                )
+
+    return _dedupe_preserve(patterns)[:5]
+
+
+def _dedupe_preserve(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        key = item.lower().strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        result.append(item.strip())
+    return result
+
+
+def _format_bullets(items: list[str], fallback: str) -> str:
+    if not items:
+        return f"- {fallback}"
+    return "\n".join(f"- {item}" for item in items)
+
+
+def _analog_packet(events: list[tuple[StrategicEvent, float]]) -> str:
+    if not events:
+        return "- No analogs retrieved."
+    rows: list[str] = []
+    for event, similarity in events[:3]:
+        deep = event.deep_dive or {}
+        rows.append(
+            "\n".join(
+                [
+                    f"- [{event.event_id}] {event.title} | score={similarity:.3f} | date={event.date}",
+                    f"  Summary: {_clean_snippet(event.summary or event.scenario, 170)}",
+                    f"  Intent: {_clean_snippet(str(deep.get('intent', 'Not specified')), 150)}",
+                    f"  India Angle: {_clean_snippet(str(deep.get('india_reaction') or deep.get('india_status_at_moment') or 'Not specified'), 150)}",
+                ]
+            )
+        )
+    return "\n".join(rows)
 
 
 def build_deterministic_brief(query: str, result: ForecastResult) -> str:
@@ -98,110 +283,117 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
 def build_llm_prompt(
     query: str, result: ForecastResult, live_context: str | None = None
 ) -> str:
-    top_analogs = result.analogs[:5]  # Deep focus on top 5 only
-    analog_blocks = []
-    for event, similarity in top_analogs:
-        deep_sections = []
-        if event.deep_dive:
-            for k, v in event.deep_dive.items():
-                section_title = k.replace("_", " ").title()
-                deep_sections.append(f"**{section_title}**: {v}")
-
-        analog_blocks.append(
-            "\n".join(
-                [
-                    f"### {event.title} ({event.date})",
-                    f"**Similarity Score**: {similarity:.3f}",
-                    f"**Baseline Summary**: {event.summary or event.scenario}",
-                    f"**Full Scenario**: {event.scenario}" if event.scenario else "",
-                    "\n".join(deep_sections) if deep_sections else "**Deep Dive Analysis**: N/A",
-                    f"**Retaliatory Risks**: {'; '.join(event.retaliatory_risks)}" if event.retaliatory_risks else "",
-                    f"**Strategic Countermeasures**: {'; '.join(event.countermeasures)}" if event.countermeasures else "",
-                    f"**Strategic Indicators**: {', '.join(event.leading_indicators[:8])}",
-                    f"**Internal Notes**: {event.notes[:500]}",
-                ]
-            )
-        )
-
-    risk_summary = "\n".join([f"- **{label.replace('_', ' ').upper()}**: {score:.3f}" for label, score in result.risk_scores.items()])
-
-    # Build the live news section with deeper integration instructions
-    live_section = ""
-    if live_context:
-        live_section = (
-            f"## 📡 LIVE INTELLIGENCE FEED (Today's News)\n{live_context}\n\n"
-            "**INTEGRATION INSTRUCTION**: Do NOT just list news. "
-            "You MUST weave these headlines into your **PROBABILITY TABLE** and **MULTI-ACTOR BREAKDOWN**. "
-            "If an article mentions a US policy shift, cite the source in the 'Key Trigger' column of the table. "
-            "Example: '(Ref: Economic Times)'.\n\n"
-        )
-
-    # Reality checking logic
-    reality_sync_block = (
-        "## 🔍 REALITY SYNC PROTOCOL\n"
-        "You MUST evaluate the user's prompt for factual accuracy against your database and live news. "
-        "1. If the user makes a premature claim (e.g., 'India has 48 AMCA jets' or 'Kaveri is 110kN now'), you MUST start your response with a **[REALITY CHECK]** tag. "
-        "2. State the current official status (e.g., 'AMCA is in CCS-approval/prototype phase; Kaveri is 80-83kN'). "
-        "3. Explicitly state: 'Analysis will proceed based on this HYPOTHETICAL scenario.' "
-        "4. Never hallucinate that unachieved milestones are currently real unless analyzing a purely theoretical branch.\n\n"
+    top_analogs = result.analogs[:3]
+    risk_summary = "\n".join(
+        [f"- **{label.replace('_', ' ').upper()}**: {score:.3f}" for label, score in result.risk_scores.items()]
+    ) or "- No scored risks available."
+    top_similarity = top_analogs[0][1] if top_analogs else 0.0
+    evidence_strength = (
+        "HIGH" if top_similarity >= 0.35 else
+        "MEDIUM" if top_similarity >= 0.18 else
+        "LOW"
     )
-
-    # Detect if query mentions AMCA for conditional escalation
-    lower_q = query.lower()
-    amca_flag = any(kw in lower_q for kw in ["amca", "110kn", "110 kn", "fifth gen", "5th gen", "advanced medium combat"])
-    kaveri_flag = any(kw in lower_q for kw in ["kaveri", "engine", "gtre", "gtx"])
-    f35_flag = any(kw in lower_q for kw in ["f-35", "f35", "lightning"])
-
-    conditional_block = ""
-    if amca_flag:
-        conditional_block = (
-            "## ⚠️ AMCA ESCALATION FLAG DETECTED\n"
-            "The query references the AMCA / next-generation engine program. "
-            "This is a THRESHOLD EVENT. Your probability table MUST reflect elevated F-35-to-Pakistan risk (estimate: 25-40% range, "
-            "up from baseline ~5%) because a successful indigenous 110kN engine would eliminate India's air-power dependency on the West entirely. "
-            "Analyze this escalation path explicitly.\n\n"
-        )
-    elif kaveri_flag or f35_flag:
-        conditional_block = (
-            "## ℹ️ ENGINE/PARITY CONTEXT\n"
-            "The query references the Kaveri engine or F-35 parity dynamics. "
-            "Baseline F-35-to-Pakistan probability is low (~5-8%) due to Pakistan's GDP (~$340B), IMF dependency, "
-            "and CAATSA-disqualifying Chinese hardware (HQ-9, JF-17 avionics). "
-            "However, your analysis must note how this escalates non-linearly if India achieves propulsion sovereignty (AMCA 110kN).\n\n"
+    evidence_instruction = (
+        "Top analog similarity is weak. You must explicitly label the assessment as exploratory and avoid precise claims."
+        if evidence_strength == "LOW"
+        else "You may make bounded inferences, but must keep them tied to the evidence blocks below."
+    )
+    live_section = f"## LIVE HEADLINES\n{live_context}\n\n" if live_context else "## LIVE HEADLINES\nNo live headlines were provided.\n\n"
+    mode = _query_mode(query)
+    india_interests = _format_bullets(
+        _extract_india_interests(top_analogs),
+        "No India-specific interest could be extracted beyond the risk gradients."
+    )
+    adversary_objectives = _format_bullets(
+        _extract_adversary_objectives(top_analogs),
+        "No adversary objective is explicit; keep the answer narrow."
+    )
+    constraints = _format_bullets(
+        _extract_constraints(top_analogs),
+        "No concrete constraint is explicit; avoid overclaiming."
+    )
+    red_lines = _format_bullets(
+        _extract_red_lines(top_analogs),
+        "No red line is explicit; infer cautiously."
+    )
+    primary_actor = _primary_actor_assessment(top_analogs)
+    pattern_library = _format_bullets(
+        _pattern_library(query, result.analogs),
+        "No deeper pattern was extracted beyond the top analogs."
+    )
+    structure_block = (
+        "## Reality Check\n"
+        "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
+        "## India-First Answer\n"
+        "3-6 bullets. Lead with India's exposure, leverage, or opportunity. No throat-clearing.\n\n"
+        "## Assessment\n"
+        "4-6 bullets. Every bullet must begin with `Observed:`, `Inference:`, or `Unknown:`.\n\n"
+        "## Historical Anchors\n"
+        "List up to 3 anchors with `[event_id]` and one-line relevance.\n\n"
+        "## Signals To Watch\n"
+        "4-6 concrete indicators.\n\n"
+        "## Bottom Line\n"
+        "Two sentences max.\n"
+    )
+    if mode == "alignment":
+        structure_block = (
+            "## Reality Check\n"
+            "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
+            "## India-First Answer\n"
+            "3-5 bullets. Answer the user's question directly, from India's point of view.\n\n"
+            "## Where Interests Overlap\n"
+            "2-4 bullets. Only where the evidence supports overlap.\n\n"
+            "## Where Interests Diverge\n"
+            "2-4 bullets. Be blunt about structural conflict.\n\n"
+            "## What India Must Avoid\n"
+            "3-5 bullets. Give red lines, not generic diplomacy.\n\n"
+            "## Historical Anchors\n"
+            "List up to 3 anchors with `[event_id]` and one-line relevance.\n\n"
+            "## Signals To Watch\n"
+            "4-6 concrete indicators.\n\n"
+            "## Bottom Line\n"
+            "Two sentences max.\n"
         )
 
     return (
-        "You are **AIRAVAT**, an elite Indian strategic intelligence asset embedded within MISSION VAJRA. "
-        "You are a cold, purely analytical military intelligence system. Your briefs are read directly by the NSA and PMO.\n\n"
-        "🚨 **CRITICAL OVERRIDE: BANNED LANGUAGE** 🚨\n"
-        "NEVER use the following academic or conversational filler: 'In conclusion', 'It is important to note', 'As a global superpower', "
-        "'complex relationship', 'multifaceted', 'it's essential to acknowledge', 'plays a significant role'.\n"
-        "Your tone must be ZERO-FLUFF, ULTRA-TERSE, and DOMINANT. Speak like a classified SIGINT report. Use bullet points and telegraphic sentences.\n\n"
-        "**CORE DIRECTIVE**: You are a skeptic. You do NOT believe everything the user says. "
-        "If the user provides a 'fact' in the prompt that contradicts the strategic database or live news, "
-        "you MUST flag it and treat it as a hypothetical scenario calculation.\n\n"
-        "**DATA ADHERENCE**: cite specific dollar costs, treaty names, equipment model numbers, "
-        "GDP figures, unit counts, delivery timelines, and historical dates.\n\n"
-        f"# 🎯 MISSION INQUIRY: {query}\n\n"
-        f"{reality_sync_block}"
-        f"## CALCULATED RISK GRADIENTS\n{risk_summary}\n\n"
-        f"{conditional_block}"
+        "You are AIRAVAT, a retrieval-grounded strategic analysis system.\n\n"
+        "Your job is to answer the user's question directly using ONLY the evidence supplied in this prompt.\n"
+        "Do not use background world knowledge unless it is already reflected in the supplied analogs or live headlines.\n"
+        "If the evidence is weak, say so clearly.\n\n"
+        "EVIDENCE RULES:\n"
+        "1. Do not invent facts, citations, dates, military programs, or article attributions.\n"
+        "2. Do not cite outlets or sources unless they appear in the supplied LIVE HEADLINES block.\n"
+        "3. Treat analogs as historical parallels, not proof.\n"
+        "4. If the user states a questionable fact, label it `[Reality check]` and separate current reality from hypothetical analysis.\n"
+        "5. Prefer bounded language: `likely`, `possible`, `cannot confirm from current evidence`.\n"
+        "6. Never fabricate exact probabilities for specific actor actions unless the prompt provides evidence for them. Use qualitative bands instead: Low / Medium / High.\n"
+        "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n\n"
+        f"QUERY\n{query}\n\n"
+        f"QUERY MODE: {mode.upper()}\n"
+        f"EVIDENCE STRENGTH: {evidence_strength}\n"
+        f"ANALYST NOTE: {evidence_instruction}\n\n"
+        f"CALCULATED RISK GRADIENTS\n{risk_summary}\n\n"
+        "PRIMARY ACTOR SIGNAL\n"
+        f"- {primary_actor}\n\n"
+        "INDIA INTERESTS\n"
+        f"{india_interests}\n\n"
+        "ADVERSARY OBJECTIVES\n"
+        f"{adversary_objectives}\n\n"
+        "CONSTRAINTS / PRESSURE TOOLS\n"
+        f"{constraints}\n\n"
+        "PATTERN LIBRARY\n"
+        f"{pattern_library}\n\n"
+        "INDIA RED LINES\n"
+        f"{red_lines}\n\n"
         f"{live_section}"
-        "## CLASSIFIED HISTORICAL ANALOGS\n"
-        "Use these records as your evidence base. Extract the Intent, Operations, and India Reaction verbatim where relevant.\n\n"
-        + "\n\n---\n\n".join(analog_blocks)
-        + "\n\n## MANDATORY RESPONSE STRUCTURE:\n"
-        "Your response MUST contain ALL of the following sections in this order:\n\n"
-        "**1. STRATEGIC SUMMARY** (Include [REALITY CHECK] if the prompt contains factual errors)\n\n"
-        "**2. MULTI-ACTOR BREAKDOWN** — Weave in live news citations where relevant (e.g., 'Ref: BBC'). Ban all essay paragraphs here. Give bulleted operational threat assessments for each.\n"
-        "   - 🇺🇸 **USA INTEL:**\n"
-        "   - 🇨🇳 **CHINA INTEL:**\n"
-        "   - 🇵🇰 **PAKISTAN INTEL:**\n\n"
-        "**3. THREAT MATRIX (TABLE)** — Columns: `| Actor | Threat Type | Probability | Timeline | Key Trigger (Cite News Source) |` \n"
-        "   Note: For F-35 tracking, use the AMCA engine success as a nonlinear multiplier.\n\n"
-        "**4. HISTORICAL DEEP DIVE** — One short paragraph.\n\n"
-        "**5. COMPARATIVE TABLE**\n\n"
-        "**6. OPERATIONAL RECOMMENDATIONS** — Actionable military/economic directives only.\n\n"
-        "**7. BOTTOM LINE** — Two sentences maximum. Brutal honesty.\n\n"
-        "Style: Telegraphic, aggressive, data-dense. Absolutely no conversational intro or outro."
+        "HISTORICAL ANALOG PACKET\n"
+        f"{_analog_packet(top_analogs)}\n\n"
+        "RESPONSE FORMAT\n"
+        "Write in Markdown using exactly these sections:\n\n"
+        f"{structure_block}\n"
+        "STYLE\n"
+        "Short sentences. No filler. No motivational language. No invented citations.\n"
+        "Do not include actor sections that are unsupported by the evidence packet.\n"
+        "Use the pattern library when it reveals a repeated method such as proxy balancing, buffer-state collapse, sanctions leverage, scientist targeting, sabotage, or honey-trap coercion.\n"
+        "Do not say 'the situation is complex'. Be concrete."
     )

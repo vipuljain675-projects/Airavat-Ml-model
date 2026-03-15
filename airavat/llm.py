@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 
 
@@ -32,10 +33,14 @@ class GroqClient:
     def is_configured(self) -> bool:
         return bool(self.api_key)
 
-    def generate(self, prompt: str) -> str:
-        return self.chat([{"role": "user", "content": prompt}])
+    def generate(self, prompt: str, allowed_sources: list[str] | None = None) -> str:
+        return self.chat([{"role": "user", "content": prompt}], allowed_sources=allowed_sources)
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
+    def chat(
+        self,
+        messages: list[dict[str, str]],
+        allowed_sources: list[str] | None = None,
+    ) -> str:
         if not self.api_key:
             raise RuntimeError("GROQ_API_KEY is not set.")
 
@@ -53,25 +58,44 @@ class GroqClient:
             messages.insert(0, {
                 "role": "system",
                 "content": (
-                    "You are AIRAVAT, an elite Indian strategic intelligence system. "
-                    "You are NOT a generic AI. You are a cold, calculating former RAW analyst and aerospace economist. "
-                    "BANNED PHRASES: 'In conclusion', 'It is important to note', 'As a global superpower', 'complex relationship', 'multifaceted', 'play a significant role'. "
-                    "Tone: Ultra-terse, gritty military intelligence briefing. Do NOT use polite filler or academic prose. Speak in bullet points, fragments, and hard data. "
-                    "CORE DIRECTIVE: You are a skeptic. Do NOT blindly believe everything the user claims. "
-                    "If the user says 'India has 48 AMCA jets' or 'Kaveri is 110kN' but your database/news says otherwise, "
-                    "you MUST flag it as a HYPOTHETICAL projection and state the current actual reality first. "
-                    "Your job is to produce intelligence-grade briefs that cite REAL DATA: "
-                    "dollar costs, unit counts, treaty names (CAATSA, MTCR, NSG, NDAA), GDP figures, "
-                    "weapon model numbers (F-16 Block 70, J-10CE, WS-13E, GE F404, GE F414), "
-                    "and named historical precedents with exact dates. "
-                    "Vague phrases like 'significant pressure' or 'strategic concerns' are BANNED unless backed by a number."
+                    "You are AIRAVAT, a retrieval-grounded strategic analysis system. "
+                    "Use only evidence provided in the prompt. "
+                    "If evidence is weak or missing, say so directly. "
+                    "Never invent citations, articles, probabilities, dates, or operational details. "
+                    "Keep the answer concise, direct, and analyst-style."
                 ),
             })
 
         chat_completion = client.chat.completions.create(
             messages=messages,
             model=self.model,
-            temperature=0.6,
+            temperature=0.2,
         )
 
-        return chat_completion.choices[0].message.content.strip()
+        response = chat_completion.choices[0].message.content.strip()
+        return self._sanitize_response(response, allowed_sources or [])
+
+    @staticmethod
+    def _sanitize_response(text: str, allowed_sources: list[str]) -> str:
+        if not text:
+            return text
+
+        cleaned = text
+
+        if allowed_sources:
+            allowed = {source.lower() for source in allowed_sources}
+            citation_pattern = re.compile(r"\((?:Ref:\s*)?([^)]+)\)")
+
+            def replace_citation(match: re.Match[str]) -> str:
+                cited = match.group(1).strip()
+                cited_lower = cited.lower()
+                if any(source in cited_lower for source in allowed):
+                    return match.group(0)
+                if any(token in cited_lower for token in ("bbc", "reuters", "al jazeera", "ndtv", "times of india", "the hindu")):
+                    return "(Unverified source attribution removed)"
+                return match.group(0)
+
+            cleaned = citation_pattern.sub(replace_citation, cleaned)
+
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+        return cleaned.strip()
