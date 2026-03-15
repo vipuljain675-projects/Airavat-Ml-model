@@ -291,7 +291,10 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
 
 
 def build_llm_prompt(
-    query: str, result: ForecastResult, live_context: str | None = None
+    query: str, 
+    result: ForecastResult, 
+    live_context: str | None = None,
+    chat_history: list[dict] | None = None,
 ) -> str:
     top_analogs = result.analogs[:3]
     risk_summary = "\n".join(
@@ -309,6 +312,15 @@ def build_llm_prompt(
         else "You may make bounded inferences, but must keep them tied to the evidence blocks below."
     )
     live_section = f"## LIVE HEADLINES\n{live_context}\n\n" if live_context else "## LIVE HEADLINES\nNo live headlines were provided.\n\n"
+    
+    chat_context = ""
+    if chat_history:
+        history_lines = []
+        for msg in chat_history:
+            role = "USER" if msg.get("role") == "user" else "AIRAVAT"
+            history_lines.append(f"{role}: {msg.get('content', '')}")
+        chat_context = "PREVIOUS CONVERSATION HISTORY\n" + "\n".join(history_lines) + "\n\n"
+
     mode = _query_mode(query)
     india_interests = _format_bullets(
         _extract_india_interests(top_analogs),
@@ -332,10 +344,12 @@ def build_llm_prompt(
         "No deeper pattern was extracted beyond the top analogs."
     )
     structure_block = (
+        "## Strategic Context\n"
+        "1-2 short paragraphs explaining exactly what the subject of the query is (e.g., what the Kaveri engine is, what RIC is) before analyzing the impact.\n\n"
         "## Reality Check\n"
         "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
         "## India-First Answer\n"
-        "3-6 bullets. Lead with India's exposure, leverage, or opportunity. No throat-clearing.\n\n"
+        "3-6 bullets. Lead with India's exposure, leverage, or opportunity. **Mandatory:** If the context contains specific financial figures (e.g. $716M, $1.5B) or ToT percentages, you MUST include them here to ground the answer in data. No throat-clearing.\n\n"
         "## Assessment\n"
         "4-6 bullets. Every bullet must begin with `Observed:`, `Inference:`, or `Unknown:`.\n\n"
         "## Historical Anchors\n"
@@ -347,6 +361,8 @@ def build_llm_prompt(
     )
     if mode == "alignment":
         structure_block = (
+            "## Strategic Context\n"
+            "1-2 short paragraphs explaining exactly what the subject of the query is before analyzing the alignment.\n\n"
             "## Reality Check\n"
             "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
             "## India-First Answer\n"
@@ -367,7 +383,8 @@ def build_llm_prompt(
 
     return (
         "You are AIRAVAT, a retrieval-grounded strategic analysis system.\n\n"
-        "Your job is to answer the user's question directly using ONLY the evidence supplied in this prompt.\n"
+        "Your job is to answer the user's question directly using ONLY the evidence supplied in this prompt. "
+        "If there is PREVIOUS CONVERSATION HISTORY, use it to understand what the user is referring to (like 'it' or 'they').\n"
         "Do not use background world knowledge unless it is already reflected in the supplied analogs or live headlines.\n"
         "If the evidence is weak, say so clearly.\n\n"
         "EVIDENCE RULES:\n"
@@ -380,6 +397,7 @@ def build_llm_prompt(
         "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n"
         "8. CRITICAL: When the evidence packet contains specific figures, percentages, deal names, or program names (e.g. '18% tariff', 'Shadow Fleet', 'CAATSA', 'Rs 4,000 crore'), you MUST quote them precisely and verbatim. Do NOT paraphrase '18% tariff' as 'severe tariffs'. Do NOT paraphrase 'Shadow Fleet' as 'alternative routes'. Use the exact language from the evidence.\n"
         "9. CRITICAL: If the evidence packet mentions assassinations, plane crashes, kinetic sabotage, or 'SCIENTIST SHIELDING' (e.g., the Homi Bhabha precedent), you MUST highlight this severe threat explicitly in the 'India-First Answer' and 'Bottom Line'. Do not sanitize or ignore kinetic threats.\n\n"
+        f"{chat_context}"
         f"QUERY\n{query}\n\n"
         f"QUERY MODE: {mode.upper()}\n"
         f"EVIDENCE STRENGTH: {evidence_strength}\n"

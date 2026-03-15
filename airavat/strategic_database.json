@@ -255,7 +255,13 @@
         "deep_dive": {
             "intent": "To cripple India's indigenous fighter jet program (Tejas Mk1A/Mk2) by withholding critical engine technology, thereby ensuring Pakistan remains competitive and India stays reliant on Western hardware.",
             "india_reaction": "India has accelerated the Kaveri engine validation and is negotiating offsets from other Western partners like France (Safran) to create a multi-source engine pipeline.",
-            "operations": "Despite advance payments for GE F404 engines, deliveries were stalled, prompting the MoD to fast-track the 83kN Kaveri afterburner trials in Russia and India.",
+            "operations": "Despite massive advance payments for GE engines, deliveries were stalled, prompting the MoD to fast-track the 83kN Kaveri afterburner trials in Russia and India.",
+            "financial_trap_data": {
+                "f404_deal_1_signed_2023": "99 F404-IN20 Engines for Tejas Mk1A (83 aircraft) worth $716M.",
+                "f404_deal_2_prospective": "113 F404-IN20 Engines for Tejas Mk1A (97 aircraft) worth ~$1 Billion.",
+                "f414_tot_deal_in_progress": "99 F414-INS6 Engines with 80% Tech Transfer for Tejas Mk2 / AMCA worth ~$1.5 Billion (first flight targeted late 2026)."
+            },
+            "strategic_takeaway": "By 2047, the value of these deals isn't the monetary cost—it's the 80% ToT in the F414 deal. The US will likely resist honoring the ToT clause to maintain its leverage, requiring India to use the Kaveri breakthroughs as leverage.",
             "present_threat_comparison": "This technology trap is the modern equivalent of the 1980s supercomputer blockade, requiring absolute 'Propulsion Sovereignty' to be a true global power."
         }
     },
@@ -593,7 +599,7 @@
         "keywords": "f-35 pakistan f-16 air parity retaliation balancing superpower arms race pressure usa paf hardware escalation sabotage covert engine kaveri amca 110kn fifth generation stealth fighter",
         "deep_dive": {
             "intent": "Washington's 'Balancing' doctrine treats South Asia as a zero-sum chessboard. Every gain in Indian propulsion sovereignty (Kaveri 83kN, AMCA 110kN target) is perceived as a reduction in US leverage. The F-35 offer to Pakistan is not about Pakistan's capability but about forcing India back to the negotiating table for Western engine tech.",
-            "india_reaction": "India has accelerated the indigenous AMCA program (target: 110kN AFTER engine), deployed 'Necklace of S-400s' (5 squadrons, ~$5.4B, CAATSA-defying), and is negotiating a GE F414-INS6 deal (99 engines, ~$716M signed 2023) as a bridge technology.",
+            "india_reaction": "India has accelerated the indigenous AMCA program (target: 110kN AFTER engine), deployed 'Necklace of S-400s' (5 squadrons, ~$5.4B, CAATSA-defying), and is negotiating the GE F414-INS6 deal (~$1.5B with 80% ToT) while resolving F404 delivery delays ($716M deal).",
             "operations": "Post-Kaveri milestone: USG approved $450M F-16 Block 70 'sustainment' package to PAF in 2022. Post-S400 delivery: no CAATSA sanctions imposed on India. Pattern: The US uses Pakistan as a pressure valve, not a genuine ally.",
             "f35_probability_baseline": "BASELINE (Kaveri only): ~5-8%. Pakistan's PAF budget is ~$7.5B/year. An F-35 fleet of 36 aircraft costs ~$2.95B purchase + ~$1.44B/year sustainment \u2014 consuming 58% of PAF's entire annual budget. Pakistan's current IMF bailout of $7B (Feb 2024) and $340B GDP make this economically impossible without a massive US grant program akin to Israel's MOU ($3.8B/year).",
             "f35_probability_amca_threshold": "THRESHOLD EVENT (AMCA 110kN engine success): ~30-40%. If India achieves full propulsion sovereignty AND delivers functional 5th-gen stealth via AMCA, the US loses ALL leverage over Indian air-power procurement. At this point, offering Pakistan F-35s becomes strategically rational for Washington \u2014 not to give Pakistan air superiority, but to force India to divert \u20b92-3 lakh crore into defensive upgrades rather than power projection. The AUKUS precedent ($368B nuclear sub deal with Australia) confirms the US will offer tier-1 assets when the strategic calculus demands it.",

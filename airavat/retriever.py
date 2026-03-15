@@ -24,75 +24,58 @@ GENERIC_TITLES = {"classified event", "strategic event", "unknown"}
 
 
 # ---------------------------------------------------------------------------
-# Fallback: bare-bones bag-of-words cosine (no dependencies)
+# Semantic Vectors: Dense Embeddings via sentence-transformers
 # ---------------------------------------------------------------------------
 
 def _tokenize(text: str) -> list[str]:
     return TOKEN_PATTERN.findall(text.lower())
 
-
-# Public alias — training.py imports this
+# Public alias — training.py and forecaster.py imports this
 tokenize = _tokenize
 
+_embedding_model = None
 
-
-def vectorize(text: str) -> Counter[str]:
-    return Counter(_tokenize(text))
-
-
-def cosine_similarity(left: dict[str, float], right: dict[str, float]) -> float:
-    if not left or not right:
-        return 0.0
-    common = left.keys() & right.keys()
-    numerator = sum(left[t] * right[t] for t in common)
-    left_norm = math.sqrt(sum(v * v for v in left.values()))
-    right_norm = math.sqrt(sum(v * v for v in right.values()))
-    if left_norm == 0.0 or right_norm == 0.0:
-        return 0.0
-    return numerator / (left_norm * right_norm)
+def get_embedding_model():
+    global _embedding_model
+    if _embedding_model is None:
+        from sentence_transformers import SentenceTransformer
+        import os
+        # Only suppress symlink warning if running on huggingface hub
+        os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _embedding_model
 
 
 class AnalogRetriever:
     def __init__(self, events: list[StrategicEvent]):
         self.events = events
-        self.event_vectors = {
-            e.event_id: vectorize(e.searchable_text()) for e in events
-        }
-        self.idf = self._compute_idf()
-
-    def _compute_idf(self) -> dict[str, float]:
-        n_docs = len(self.event_vectors)
-        doc_counts: Counter[str] = Counter()
-        for vec in self.event_vectors.values():
-            for token in vec:
-                doc_counts[token] += 1
+        self.model = get_embedding_model()
         
-        idf = {}
-        for token, count in doc_counts.items():
-            # Standard IDF: log(N/df)
-            idf[token] = math.log(n_docs / count) if count > 0 else 0.0
-        return idf
-
-    def _apply_weights(self, tf_vector: Counter[str]) -> dict[str, float]:
-        weighted = {}
-        for token, freq in tf_vector.items():
-            weight = freq * self.idf.get(token, 1.0) # Use 1.0 for unknown tokens
-            weighted[token] = weight
-        return weighted
+        # Precompute embeddings for all events
+        # searchable_text() combines scenario, notes, keywords
+        texts = [e.searchable_text() for e in events]
+        self.event_embeddings = self.model.encode(texts, convert_to_tensor=True)
 
     def retrieve(self, query: str, top_k: int = 10) -> list[tuple[StrategicEvent, float]]:
-        query_tf = vectorize(query)
-        query_vector = self._apply_weights(query_tf)
-        query_tokens = set(query_tf)
+        from sentence_transformers import util
+        
+        query_embedding = self.model.encode(query, convert_to_tensor=True)
+        # Compute cosine similarities between query and all events
+        cos_scores = util.cos_sim(query_embedding, self.event_embeddings)[0]
+        
+        query_tokens = set(_tokenize(query))
         query_themes = self._query_themes(query_tokens)
 
         scored = []
-        for event in self.events:
-            doc_tf = self.event_vectors[event.event_id]
-            doc_vector = self._apply_weights(doc_tf)
-            score = cosine_similarity(query_vector, doc_vector)
-            score += self._heuristic_adjustment(event, query_tokens, query_themes)
-            scored.append((event, score))
+        for i, event in enumerate(self.events):
+            base_score = float(cos_scores[i].item())
+            
+            # Since dense vectors naturally score higher (0.1 - 0.7), we adjust heuristics scaling
+            adj = self._heuristic_adjustment(event, query_tokens, query_themes)
+            
+            # Combine semantic similarity and strategic heuristics
+            final_score = base_score + (adj * 0.5)
+            scored.append((event, final_score))
 
         return sorted(scored, key=lambda x: x[1], reverse=True)[:top_k]
 
@@ -122,12 +105,21 @@ class AnalogRetriever:
         region_tokens = set(_tokenize(" ".join(event.regions)))
         type_tokens = set(_tokenize(" ".join(event.event_types)))
 
-        overlap_bonus = len(query_tokens & title_tokens) * 0.03
-        overlap_bonus += len(query_tokens & keyword_tokens) * 0.02
-        overlap_bonus += len(query_tokens & deep_tokens) * 0.01
-        adjustment += min(overlap_bonus, 0.15)
+        overlap_bonus = len(query_tokens & title_tokens) * 0.05
+        overlap_bonus += len(query_tokens & keyword_tokens) * 0.04
+        overlap_bonus += len(query_tokens & deep_tokens) * 0.03
+        
+        # Super-boost for highly specific keywords (like "homi", "bhabha", "assassination", "cia")
+        # that are present in the query and the event text
+        event_text_lower = event.searchable_text().lower()
+        exact_match_bonus = 0.0
+        for token in query_tokens:
+             if len(token) > 3 and token in event_text_lower:
+                 exact_match_bonus += 0.06
 
-        if "india" in query_tokens and "india" in event.searchable_text():
+        adjustment += min(overlap_bonus + exact_match_bonus, 0.40)
+
+        if "india" in query_tokens and "india" in event.searchable_text().lower():
             adjustment += 0.04
 
         matched_themes = 0

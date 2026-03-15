@@ -7,10 +7,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import StrategicArchive from "./StrategicArchive";
 import VajraSplash from "./VajraSplash";
+import ThreatWeb from "./ThreatWeb";
 
 const tabs = [
   { id: "airavat", label: "Airavat AI", icon: Cpu },
   { id: "archive", label: "Strategic Archive", icon: Library },
+  { id: "threatweb", label: "Threat Web", icon: Activity },
 ];
 
 const GREETING_CARDS = [
@@ -89,14 +91,16 @@ export default function CommandHub() {
       return;
     }
 
-    setIsLoading(true);
-
-
     try {
+      const chatHistory = messages.slice(-4).map((m: any) => ({
+        role: m.role,
+        content: m.content
+      }));
+
       const response = await fetch("http://localhost:8005/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q, include_news: true }),
+        body: JSON.stringify({ query: q, include_news: true, chat_history: chatHistory }),
       });
 
       if (!response.ok) throw new Error("Bridge communication failed");
@@ -407,6 +411,18 @@ export default function CommandHub() {
               className="h-[calc(100vh-56px)] px-6 md:px-12 pt-8"
             >
               <StrategicArchive />
+            </motion.div>
+          )}
+
+          {activeTab === "threatweb" && (
+            <motion.div
+              key="threatweb"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="h-[calc(100vh-56px)]"
+            >
+              <ThreatWeb />
             </motion.div>
           )}
         </AnimatePresence>

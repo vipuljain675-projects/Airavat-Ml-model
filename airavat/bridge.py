@@ -26,6 +26,7 @@ app.add_middleware(
 class AnalysisRequest(BaseModel):
     query: str
     include_news: bool = True
+    chat_history: Optional[List[Dict[str, Any]]] = None
 
 class AnalysisResponse(BaseModel):
     query: str
@@ -65,7 +66,7 @@ async def analyze(request: AnalysisRequest):
         llm_error: Optional[str] = None
         if llm.is_configured():
             try:
-                prompt = build_llm_prompt(request.query, result, live_context=live_context)
+                prompt = build_llm_prompt(request.query, result, live_context=live_context, chat_history=request.chat_history)
                 allowed_sources = [headline["source"] for headline in headlines]
                 brief = llm.generate(prompt, allowed_sources=allowed_sources)
                 response_source = "groq"
@@ -137,6 +138,21 @@ async def get_records():
             })
         return records
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/graph")
+async def get_graph():
+    try:
+        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "airavat", "strategic_database.json")
+        from airavat.loader import load_events
+        database = load_events(db_path)
+        
+        from airavat.graph_builder import build_knowledge_graph
+        graph_data = build_knowledge_graph(database)
+        return graph_data
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
