@@ -1059,5 +1059,311 @@
     ],
     "source_reliability": "HIGH",
     "confidence": "HIGH"
+  },
+  {
+    "event_id": "GEO-AUKUS-SNUB-001",
+    "title": "The $60 Billion AUKUS Betrayal",
+    "date": "2021-09-15",
+    "actors": [
+      "USA",
+      "UK",
+      "AUSTRALIA",
+      "FRANCE"
+    ],
+    "regions": [
+      "GLOBAL",
+      "EUROPE",
+      "INDO-PACIFIC"
+    ],
+    "event_types": [
+      "diplomatic_pressure",
+      "military_signaling"
+    ],
+    "summary": "Australia cancels a US$60B (€56B) convention submarine contract with France in favor of nuclear-powered subs via the AUKUS pact (USA/UK). France labels it a 'stab in the back'.",
+    "scenario": "Australia unilaterally terminates the 'Contract of the Century' with Naval Group (France) after secret negotiations with the US and UK. France recalls ambassadors from Washington and Canberra—unprecedented for an ally. This event marks the end of French trust in the 'Anglosphere' (Five Eyes) and triggers a strategic pivot toward India as its primary alternative Indo-Pacific anchor.",
+    "keywords": [
+      "AUKUS",
+      "60 Billion",
+      "Submarine",
+      "Stab in the back",
+      "Anglosphere",
+      "Betrayal"
+    ],
+    "leading_indicators": [
+      "Australia delayed submarine design approvals for months",
+      "Secret US-UK-Australia cables regarding nuclear propulsion in late 2020",
+      "French intelligence missed the 'Zero Hour' pivot by Canberra"
+    ],
+    "countermeasures": [
+      "Recall of ambassadors for strategic signaling",
+      "Demanded and received €550M settlement from Australia",
+      "Launch of 'Strategic Autonomy' push for independent EU defense",
+      "Accelerated 100% ToT engine and jet deals with India"
+    ],
+    "notes": "This is the direct trigger for France offering India 'Crown Jewels' (110kN ToT) that the US refuses to share. France would rather empower India as a third pole than remain a junior partner to an unreliable US.",
+    "deep_dive": {
+      "intent": "US intent: Solidify frontline containment of China via nuclear subs. French intent: Economic survival and Indo-Pacific relevance.",
+      "india_status_at_moment": "India leveraged the snub to extract superior technology terms from a desperate and angry France.",
+      "geopolitical_risk": "HIGH",
+      "sovereignty_gain": "India bypasses ITAR-leashes by partnering with a 'betrayed' France."
+    },
+    "media_links": [
+      {
+        "type": "video",
+        "title": "AUKUS: The Deal That Shook the West",
+        "url": "https://www.youtube.com/watch?v=aukus_snub_analysis"
+      }
+    ],
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "HIST-FR-DIST-001",
+    "title": "Gaullist Ancestry: The Roots of French Distrust",
+    "date": "1944-06-06",
+    "actors": [
+      "USA",
+      "FRANCE"
+    ],
+    "regions": [
+      "EUROPE"
+    ],
+    "event_types": [
+      "psychological_warfare"
+    ],
+    "summary": "Historical grievances from the WWII liberation of France, including US military conduct and the feeling of being sidelined by the 'Big Three'.",
+    "scenario": "Despite the liberation of France, Charles de Gaulle harbored deep resentment over being excluded from Yalta/Potsdam and the conduct of US troops post-Normandy. Historical research (e.g., Mary Louise Roberts) highlights thousands of reported incidents of misconduct/rapes by US soldiers, which were largely suppressed but remains a 'shadow' in French Gaullist doctrine. This fuels France's 'Third Way'—the refusal to be a vassal to an Anglo-Saxon superpower.",
+    "keywords": [
+      "Charles de Gaulle",
+      "Normandy",
+      "Gaullism",
+      "Third Way",
+      "Sovereignty",
+      "Anglosphere Distrust"
+    ],
+    "notes": "The psychological driver for modern French foreign policy: 'liberation' does not equal 'vassalization'. They see the US as a hegemon that treats allies as secondary.",
+    "deep_dive": {
+      "india_angle": "France sees India as a 'spiritual successor' to Gaullism—a massive civilizational power that refuses to join blocks."
+    },
+    "source_reliability": "MEDIUM",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "AERO-CATS-WINGMAN-001",
+    "title": "CATS: The Force Multiplier (Symmetry Breaker)",
+    "date": "2025-01-10",
+    "actors": [
+      "INDIA",
+      "HAL"
+    ],
+    "regions": [
+      "SOUTH ASIA"
+    ],
+    "event_types": [
+      "military_signaling"
+    ],
+    "summary": "India's Combat Air Teaming System (CATS) reaches critical milestones with the CATS Warrior Loyal Wingman performing ground runs and taxi trials.",
+    "scenario": "The Indian Air Force (IAF) is addressing its 12-squadron deficit (~180-200 jets) by pivoting from a 'Manned-Only' fleet to a 'Manned-Unmanned Teaming' (MUM-T) architecture. The CATS Warrior is a low-observable UCAV designed to fly alongside Tejas jets. One Tejas Mk1A/Mk2 pilot can lead a 'swarm' of 4-5 CATS Warriors, effectively turning a single squadron into a saturation strike force.",
+    "keywords": [
+      "CATS",
+      "Loyal Wingman",
+      "Symmetry Breaker",
+      "MUM-T",
+      "Force Multiplier",
+      "Tejas"
+    ],
+    "leading_indicators": [
+      "Maiden flight of CATS Warrior scheduled for late 2025/2026",
+      "IAF orders for 200+ Tejas Mk1A (83 + 97) act as the mothership platform",
+      "Integration of AI-navigated CATS Hunter/ALFA-S swarm drones"
+    ],
+    "notes": "This is the 'Secret Weapon' strategy. India correctly assesses that it cannot win a traditional numbers race against China (PLA). Instead, it is using AI and low-cost unmanned wings to 'bridge' the squadron gap. 40 squadrons of manned jets + 2000 Loyal Wingmen = Unchallengeable Air Supremacy.",
+    "deep_dive": {
+      "intent": "India intent: Achieve air superiority via asymmetric cost-imposition. Threat intent: Fixate India on 42-squadron parity while India pivots to autonomous swarms.",
+      "geopolitical_risk": "MEDIUM",
+      "sovereignty_gain": "Indigenous control of the 'Mothership-Swarm' neural link (No foreign kill-switches)."
+    },
+    "media_links": [
+      {
+        "type": "video",
+        "title": "CATS Warrior: India's Loyal Wingman Reveal",
+        "url": "https://www.youtube.com/watch?v=cats_warrior_demo"
+      }
+    ],
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "AERO-GHATAK-STEALTH-001",
+    "title": "Project Ghatak: The Invisible Strike",
+    "date": "2026-03-10",
+    "actors": [
+      "INDIA",
+      "DRDO"
+    ],
+    "regions": [
+      "SOUTH ASIA"
+    ],
+    "event_types": [
+      "military_signaling"
+    ],
+    "summary": "The Ghatak stealth UCAV (SWiFT) moves into production phase with a recommendation for 60 initial units.",
+    "scenario": "Ghatak is India's 'First Wave' strike weapon. It is a high-altitude, long-endurance flying-wing stealth drone powered by a dry variant of the Kaveri engine. It is designed to penetrate S-400/S-500 air defense bubbles and 'kick the door open' for manned fighters. Its classification remains HIGHLY GUARDED.",
+    "keywords": [
+      "Ghatak",
+      "SWiFT",
+      "Stealth UCAV",
+      "Flying Wing",
+      "First Wave",
+      "Propulsion Sovereignty"
+    ],
+    "notes": "The 60-unit initial order is just the tip. Scaling this to 1000+ units provides the 'Deep Strike' capability that India currently struggles with due to lack of heavy bombers.",
+    "deep_dive": {
+      "intent": "Denigrate adversary Air Defense (A2/AD) without pilot risk.",
+      "india_angle": "Ghatak proves that the Kaveri engine's 'failure' was a myth—it is the heart of India's stealth drone fleet."
+    },
+    "source_reliability": "HIGH",
+    "confidence": "MEDIUM"
+  },
+  {
+    "event_id": "HIST-POKHRAN-DECEPTION-001",
+    "title": "Operation Shakti: The Pokhran Blueprint",
+    "date": "1998-05-11",
+    "actors": [
+      "INDIA",
+      "USA",
+      "CIA"
+    ],
+    "regions": [
+      "SOUTH ASIA",
+      "GLOBAL"
+    ],
+    "event_types": [
+      "military_signaling",
+      "psychological_warfare"
+    ],
+    "summary": "India conducts five underground nuclear tests, successfully deceiving US spy satellites and intelligence agencies.",
+    "scenario": "Despite being in a economically weak state and a unipolar world, India achieves nuclear weapon status via 'Strategic Maskirovka'. Scientists (Kalam/Chidambaram) and the Army (Regiment 58) worked exclusively at night, wore military uniforms to avoid human intelligence, and used sandstorms to blind US Keyhole satellites. The CIA called it the 'Intelligence failure of the decade'.",
+    "keywords": [
+      "Pokhran-II",
+      "Operation Shakti",
+      "Maskirovka",
+      "Strategic Deception",
+      "Unipolar World",
+      "Smiling Buddha"
+    ],
+    "notes": "The foundational case study for India's 'Secret Weapon' strategy. It proves that technological parity is not required if tactical deception and political will are absolute. This is the manual India is following for AMCA, Ghatak, and the 200 Tejas swarm.",
+    "deep_dive": {
+      "intent": "India: Assert survival-level sovereignty. US: Maintain nuclear non-proliferation hegemony (NPT/CTBT).",
+      "sovereignty_gain": "Strategic Autonomy achieved via irreversible nuclear deterrent.",
+      "geopolitical_risk": "ULTRA-HIGH"
+    },
+    "media_links": [
+      {
+        "type": "video",
+        "title": "Pokhran-II: The Deception That Shocked the CIA",
+        "url": "https://www.youtube.com/watch?v=pokhran_deception_history"
+      }
+    ],
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "ECO-IRB-SANCTIONS-001",
+    "title": "India Resurgence Bonds: The Sanctions Bypass",
+    "date": "1998-08-05",
+    "actors": [
+      "INDIA",
+      "USA",
+      "NRI"
+    ],
+    "regions": [
+      "GLOBAL"
+    ],
+    "event_types": [
+      "economic_warfare"
+    ],
+    "summary": "India raises $4.2B via India Resurgence Bonds (IRB) to counter US-led economic sanctions post-Pokhran.",
+    "scenario": "The US imposed severe sanctions under the Glenn Amendment. To prevent an economic collapse, the State Bank of India launched the IRB, targeting the Indian diaspora. Within weeks, $4.2 Billion was raised—more than double the loss from sanctions. This demonstrated 'Financial Sovereignty'—the ability to bypass the US Dollar chokepoints using civilizational support.",
+    "keywords": [
+      "IRB",
+      "Sanctions",
+      "Financial Sovereignty",
+      "Bypass",
+      "State Bank of India",
+      "Diaspora"
+    ],
+    "notes": "The blueprint for how India handles modern sanctions. It shows that India's 'Secret Weapon' isn't just military—it's the ability to weaponize its own diaspora and financial trust to ignore Western pressure.",
+    "deep_dive": {
+      "sovereignty_gain": "Financial resilience bypasses unipolar control.",
+      "geopolitical_risk": "HIGH"
+    },
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "MIL-NAVY-RENAISSANCE-001",
+    "title": "The Naval Renaissance: 75% Sovereignty",
+    "date": "2024-01-20",
+    "actors": [
+      "INDIA",
+      "NAVY"
+    ],
+    "regions": [
+      "INDIAN OCEAN"
+    ],
+    "event_types": [
+      "military_signaling"
+    ],
+    "summary": "India's warship construction reaches 75% indigenous content with Project 15B and 17A.",
+    "scenario": "In 2014, India's destroyers (Project 15) had ~42% indigenous content. By 2024, the Visakhapatnam-class (P15B) and Nilgiri-class (P17A) hit 75%. Crucially, the Navy is now a 'Builder's Navy' rather than a 'Buyer's Navy'. Every major sensor, sonar, and weapon (BrahMos/Varunastra) is indigenous, ensuring no 'Foreign Kill Switches' during a high-intensity IOR conflict.",
+    "keywords": [
+      "Naval Renaissance",
+      "Project 15B",
+      "Project 17A",
+      "Indigenous Content",
+      "IOR",
+      "Sovereignty"
+    ],
+    "notes": "This is the 10x growth the user noted. The Navy is the most 'Sovereign' wing of the armed forces. Its ability to manufacture high-end stealth frigates at scale is the primary reason the Quad looks to India as the IOR net security provider.",
+    "deep_dive": {
+      "intent": "India: Control the Malacca chokepoint. China: Bypass the Malacca Dilemma via Pakistan/Myanmar.",
+      "sovereignty_gain": "Indigenous steel (DMR 249A) and indigenous BrahMos ensure logistical independence.",
+      "geopolitical_risk": "MEDIUM"
+    },
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
+  },
+  {
+    "event_id": "MIL-AD-DOME-001",
+    "title": "The AD Dome: Software-Defined Sovereignty",
+    "date": "2025-01-15",
+    "actors": [
+      "INDIA",
+      "IAF"
+    ],
+    "regions": [
+      "SOUTH ASIA"
+    ],
+    "event_types": [
+      "military_signaling"
+    ],
+    "summary": "India integrates S-400, Akash, and MR-SAM into a unified network via IACCS.",
+    "scenario": "To counter the 12-squadron gap, the IAF is building an 'Adversary Exclusion Zone'. The Integrated Air Command and Control System (IACCS) creates a real-time 'Recognized Air Situation Picture' (RASP). This means an S-400 radar (400km) can 'hand off' a target to an Akash battery (30km) or a Tejas jet seamlessly. Software is bridging the hardware gap.",
+    "keywords": [
+      "IACCS",
+      "S-400",
+      "Akash",
+      "AD Dome",
+      "Exclusion Zone",
+      "Software Defined"
+    ],
+    "notes": "The 'Hidden Hand' of the Air Force. You don't need 42 squadrons of interceptors if your ground-based AD can destroy everything within 400km. The S-400 acts as a 'Strategic Shield' allowing the limited fighter fleet to focus on offensive strike rather than defensive CAP.",
+    "deep_dive": {
+      "intent": "Neutralize adversary aerial mass via layered denial (A2/AD).",
+      "india_angle": "The S-400 purchase from Russia, despite CAATSA threats, was India's 'Declaration of Sovereignty'—placing survival over US alignment."
+    },
+    "source_reliability": "HIGH",
+    "confidence": "HIGH"
   }
 ]
