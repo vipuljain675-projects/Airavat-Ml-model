@@ -27,6 +27,7 @@ class StrategicEvent:
     keywords: str = ""
     countermeasures: list[str] = field(default_factory=list)
     notes: str = ""
+    media_links: list[dict] = field(default_factory=list)
 
     def searchable_text(self) -> str:
         # Combine everything for retrieval
@@ -34,7 +35,7 @@ class StrategicEvent:
             self.title,
             self.summary,
             self.scenario,
-            self.keywords,
+            " ".join(self.keywords) if isinstance(self.keywords, list) else self.keywords,
             " ".join(self.actors),
             " ".join(self.targets),
             " ".join(self.regions),

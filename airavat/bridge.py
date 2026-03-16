@@ -37,6 +37,7 @@ class AnalysisResponse(BaseModel):
     sovereignty_score: float = 5.5
     response_source: str = "deterministic"
     llm_error: Optional[str] = None
+    media_links: List[dict] = []
 
 @app.post("/analyze", response_model=AnalysisResponse)
 async def analyze(request: AnalysisRequest):
@@ -100,7 +101,27 @@ async def analyze(request: AnalysisRequest):
             live_news=[{"title": h["title"], "url": h["link"], "source": h["source"]} for h in headlines],
             response_source=response_source,
             llm_error=llm_error,
+            media_links=[item for analog, _ in result.analogs for item in getattr(analog, 'media_links', [])]
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/scout")
+async def scout():
+    """
+    Triggers the autonomous scout to analyze daily deals.
+    """
+    try:
+        from airavat.scout import run_autonomous_scout
+        report_paths = run_autonomous_scout()
+        briefs = []
+        for path in report_paths:
+            with open(path, "r") as f:
+                briefs.append({
+                    "path": path,
+                    "content": f.read()
+                })
+        return {"status": "success", "briefs": briefs}
     except Exception as e:
         import traceback
         print(traceback.format_exc())

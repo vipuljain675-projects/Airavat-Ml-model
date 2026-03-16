@@ -9,7 +9,11 @@ from airavat.schema import validate_event_record
 
 
 def load_events(path: str | Path, data_format: str = "auto") -> list[StrategicEvent]:
-    raw_records = json.loads(Path(path).read_text(encoding="utf-8"))
+    path_obj = Path(path)
+    if not path_obj.exists():
+        return []
+
+    raw_records = json.loads(path_obj.read_text(encoding="utf-8"))
     if data_format == "raw":
         return load_raw_events(path)
 
@@ -58,7 +62,11 @@ def load_events(path: str | Path, data_format: str = "auto") -> list[StrategicEv
             record["event_types"] = found_types if found_types else ["STRATEGIC"]
 
         if "keywords" in record and not record.get("leading_indicators"):
-            record["leading_indicators"] = record["keywords"].split()
+            kws = record["keywords"]
+            if isinstance(kws, str):
+                record["leading_indicators"] = kws.split(",")
+            elif isinstance(kws, list):
+                record["leading_indicators"] = kws
 
         # Extract actor names from keywords if actors field is missing
         if not record.get("actors") and record.get("keywords"):
@@ -84,5 +92,29 @@ def load_events(path: str | Path, data_format: str = "auto") -> list[StrategicEv
         filtered_record = {k: v for k, v in record.items() if k in allowed_fields}
         
         events.append(StrategicEvent(**filtered_record))
+
+
+    # Automatically load dossiers if directory exists next to database
+    dossier_dir = path_obj.parent / "dossiers"
+    if dossier_dir.exists() and dossier_dir.is_dir():
+        for dossier_file in dossier_dir.glob("*.json"):
+            try:
+                dossier_data = json.loads(dossier_file.read_text(encoding="utf-8"))
+                for dossier_record in dossier_data:
+                    # Apply same intelligent mapping
+                    if "scenario" in dossier_record and not dossier_record.get("summary"):
+                        dossier_record["summary"] = dossier_record["scenario"][:200] + "..."
+                    
+                    # Ensure event_types is a list
+                    if "category" in dossier_record and not dossier_record.get("event_types"):
+                        dossier_record["event_types"] = [dossier_record["category"].upper()]
+                    
+                    # Filter fields
+                    import dataclasses
+                    allowed_fields = {f.name for f in dataclasses.fields(StrategicEvent)}
+                    filtered_dossier = {k: v for k, v in dossier_record.items() if k in allowed_fields}
+                    events.append(StrategicEvent(**filtered_dossier))
+            except Exception as e:
+                print(f"Warning: Failed to load dossier {dossier_file.name}: {e}")
 
     return events

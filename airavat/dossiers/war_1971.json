@@ -1,0 +1,66 @@
+[
+  {
+    "event_id": "HIST-1971-PAGE-02",
+    "title": "1971 War: Executive Summary",
+    "category": "HISTORICAL ANALYSIS",
+    "date": "1971-12-16",
+    "summary": "Masterclass in breaking a superpower-backed proxy state within 13 days.",
+    "scenario": "Indian forces achieved the largest surrender of personnel (93,000) since WWII. Objective: neutralize genocidal crackdown in the East while holding the West.",
+    "actors": ["India", "Pakistan"],
+    "regions": ["East Pakistan", "Bangladesh"],
+    "event_types": ["MILITARY", "STRATEGIC"],
+    "keywords": "93,000 surrender, 13 days, bangladesh, historical victory",
+    "deep_dive": {
+      "surrendered_personnel": 93000,
+      "duration": "13 days"
+    }
+  },
+  {
+    "event_id": "HIST-1971-PAGE-03",
+    "title": "Macro Threat Matrix: US-China-Pak Axis",
+    "category": "GEOPOLITICAL THREAT",
+    "date": "1971-12-01",
+    "summary": "India's sovereignty test against a coordinated tripartite threat.",
+    "scenario": "The US provided hardware and diplomatic cover to Pakistan. China mobilized forces on the Himalayan border to pin down Indian divisions. India was the '0.5 Front' in the Cold War.",
+    "actors": ["USA", "China", "Pakistan", "India"],
+    "regions": ["Asia"],
+    "event_types": ["DIPLOMATIC", "PROXY", "STRATEGIC"],
+    "keywords": "US-China-Pak axis, tripartite threat, cold war, 0.5 front",
+    "deep_dive": {
+      "us_role": "secretly funneled weapons",
+      "china_role": "Himalayan intimidation"
+    }
+  },
+  {
+    "event_id": "HIST-1971-PAGE-04",
+    "title": "Task Force 74: The USS Enterprise Gambit",
+    "category": "MARITIME COERCION",
+    "date": "1971-12-10",
+    "summary": "US deployment of nuclear-powered USS Enterprise to intimidate India.",
+    "scenario": "The deployment of Task Force 74 into the Bay of Bengal was a blunt instrument of 'Gunboat Diplomacy'. Echoes are seen today in 'Freedom of Navigation' operations.",
+    "actors": ["USA", "Seventh Fleet"],
+    "regions": ["Bay of Bengal"],
+    "event_types": ["MARITIME", "DIPLOMATIC"],
+    "keywords": "uss enterprise, task force 74, gunboat diplomacy, bay of bengal",
+    "deep_dive": {
+      "vessel": "USS Enterprise (CVN-65)",
+      "mission": "intimidation"
+    }
+  },
+  {
+    "event_id": "HIST-1971-PAGE-14",
+    "title": "The 2024 Bangladesh Reset",
+    "category": "CURRENT STRATEGIC ALERT",
+    "date": "2024-08-05",
+    "summary": "Return of the 'American Shadow' to the Bay of Bengal following regime change.",
+    "scenario": "Following 2024 leadership change in Dhaka, pattern of destabilization and 'friendly' regime installation echoes 1971 maneuvers. US interest in Saint Martin's Island vs 1971 desired base.",
+    "actors": ["USA", "Bangladesh", "India"],
+    "regions": ["Bay of Bengal", "Bangladesh"],
+    "event_types": ["PROXY", "POLITICAL_WARFARE"],
+    "keywords": "bangladesh 2024, saint martin's island, regime change, american shadow",
+    "deep_dive": {
+      "priority": "TOP",
+      "action": "Secure Eastern Grid"
+    }
+  }
+]

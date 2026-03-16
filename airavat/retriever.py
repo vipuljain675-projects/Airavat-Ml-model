@@ -96,7 +96,8 @@ class AnalogRetriever:
         adjustment = 0.0
 
         title_tokens = set(_tokenize(event.title))
-        keyword_tokens = set(_tokenize(event.keywords))
+        keyword_str = " ".join(event.keywords) if isinstance(event.keywords, list) else event.keywords
+        keyword_tokens = set(_tokenize(keyword_str))
         note_tokens = set(_tokenize(event.notes))
         deep_tokens = set(
             _tokenize(" ".join(str(v) for v in (event.deep_dive or {}).values()))
@@ -137,8 +138,19 @@ class AnalogRetriever:
         if event.date == "1900-01-01":
             adjustment -= 0.03
 
-        confidence = float(event.confidence or 0.0)
-        reliability = float(event.source_reliability or 0.0) / 5.0
+        def parse_score(val):
+            if isinstance(val, str):
+                v_upper = val.strip().upper()
+                if v_upper == "HIGH": return 0.9
+                elif v_upper == "MEDIUM": return 0.5
+                elif v_upper == "LOW": return 0.2
+                else:
+                    try: return float(val)
+                    except ValueError: return 0.5
+            return float(val or 0.0)
+            
+        confidence = parse_score(event.confidence)
+        reliability = parse_score(event.source_reliability) / 5.0
         adjustment += confidence * 0.03
         adjustment += reliability * 0.02
         return adjustment

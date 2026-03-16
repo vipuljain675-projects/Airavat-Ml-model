@@ -20,7 +20,7 @@ RISK_LABEL_TEXT = {
 
 
 def _top_risks(result: ForecastResult, limit: int = 3) -> list[tuple[str, float]]:
-    return sorted(result.risk_scores.items(), key=lambda item: item[1], reverse=True)[:limit]
+    return sorted(list(result.risk_scores.items()), key=lambda item: item[1], reverse=True)[:limit]
 
 
 def _event_lines(events: list[tuple[StrategicEvent, float]]) -> list[str]:
@@ -219,6 +219,9 @@ def _analog_packet(events: list[tuple[StrategicEvent, float]]) -> str:
         scenario_text = getattr(event, 'scenario', '') or event.summary or ''
         countermeasures = getattr(event, 'countermeasures', []) or []
         keywords_text = getattr(event, 'keywords', '') or ''
+        media_links = getattr(event, 'media_links', []) or []
+        media_text = "  Multimedia Resources: " + " | ".join([f"{m.get('title')}: {m.get('url')}" for m in media_links]) if media_links else ""
+        
         rows.append(
             "\n".join(
                 [
@@ -227,7 +230,8 @@ def _analog_packet(events: list[tuple[StrategicEvent, float]]) -> str:
                     f"  Key Data Points: {keywords_text[:400]}" if keywords_text else "",
                     f"  Intent: {_clean_snippet(str(deep.get('intent', 'See scenario above')), 400)}",
                     f"  India Angle: {_clean_snippet(str(deep.get('india_reaction') or deep.get('india_status_at_moment') or 'See scenario above'), 400)}",
-                    f"  Key Countermeasures: {' | '.join(_clean_snippet(c, 300) for c in countermeasures[:3]) if countermeasures else 'None specified'}",
+                    f"  Key Countermeasures: {' | '.join([_clean_snippet(c, 300) for c in countermeasures[:3]]) if countermeasures else 'None specified'}",
+                    media_text
                 ]
             )
         )
@@ -248,13 +252,13 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     top_analogs = result.analogs
     analog_titles = ", ".join(event.title for event, _ in top_analogs) if top_analogs else "none"
 
-    actor_mentions: defaultdict[str, int] = defaultdict(int)
+    actor_mentions: dict[str, int] = {}
     for event, _ in top_analogs:
         for token in event.searchable_text().split():
             if token in {"usa", "united_states", "west", "western", "china", "pakistan", "bangladesh", "nepal", "sri", "lanka"}:
-                actor_mentions[token] += 1
+                actor_mentions[token] = actor_mentions.get(token, 0) + 1
 
-    focus = ", ".join(sorted(actor_mentions, key=actor_mentions.get, reverse=True)[:5]) or "India's neighborhood and external powers"
+    focus = ", ".join(sorted(actor_mentions.keys(), key=lambda x: actor_mentions[x], reverse=True)[:5]) or "India's neighborhood and external powers"
 
     lines = [
         "🛡️  STRATEGIC INTELLIGENCE ASSESSMENT [ MISSION VAJRA ]",
@@ -278,7 +282,8 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     if result.indicators_to_watch:
         lines.append("")
         lines.append("👁️  INDICATORS TO WATCH NEXT")
-        for indicator in result.indicators_to_watch[:5]:
+        indicators = list(result.indicators_to_watch)
+        for indicator in indicators[:5]:
             lines.append(f"- {indicator.upper()}")
 
     if result.evidence_gaps:
@@ -357,7 +362,9 @@ def build_llm_prompt(
         "## Signals To Watch\n"
         "4-6 concrete indicators.\n\n"
         "## Bottom Line\n"
-        "Two sentences max.\n"
+        "Two sentences max.\n\n"
+        "## RESOURCES (MULTIMEDIA)\n"
+        "If the Evidence Packet contains video or article links (Multimedia Resources), list them here as bullet points with their titles and URLs. If none, omit this section.\n"
     )
     if mode == "alignment":
         structure_block = (
@@ -396,7 +403,15 @@ def build_llm_prompt(
         "6. Never fabricate exact probabilities for specific actor actions unless the prompt provides evidence for them. Use qualitative bands instead: Low / Medium / High.\n"
         "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n"
         "8. CRITICAL: When the evidence packet contains specific figures, percentages, deal names, or program names (e.g. '18% tariff', 'Shadow Fleet', 'CAATSA', 'Rs 4,000 crore'), you MUST quote them precisely and verbatim. Do NOT paraphrase '18% tariff' as 'severe tariffs'. Do NOT paraphrase 'Shadow Fleet' as 'alternative routes'. Use the exact language from the evidence.\n"
-        "9. CRITICAL: If the evidence packet mentions assassinations, plane crashes, kinetic sabotage, or 'SCIENTIST SHIELDING' (e.g., the Homi Bhabha precedent), you MUST highlight this severe threat explicitly in the 'India-First Answer' and 'Bottom Line'. Do not sanitize or ignore kinetic threats.\n\n"
+        "9. CRITICAL CONTEXT - PROXY ENCIRCLEMENT: If the user asks about or the evidence packet mentions regime changes, unrest, or proxy actions in India's neighborhood (e.g., Pakistan, Bangladesh, Nepal), you MUST explicitly state that this is a deliberate superpower strategy to cap India's economic rise ($10-11T by 2035) to prevent it from replacing China as a peer competitor. Do not use generic terms like 'regional instability'; call it what it is: strategic vassalization and encirclement.\n"
+        "10. CRITICAL CONTEXT - TECH DENIAL (GE/TEJAS): If the user asks about the GE engine deal, Kaveri, or Tejas jets, you MUST brutally state the numbers: India needs 180 Tejas Mk1 by 2030 (324 total Mk1/Mk2 jets) to maintain air superiority, but the US has only delivered 7 out of 200 required engines. You MUST state this is a deliberate delay to kill India's indigenous jet program, forcing India to bleed foreign reserves on imports (like Rafale) and maintaining Sino-Pak air parity since the IAF is critically depleted at only 30 squadrons. Mention the Kaveri 83kN breakthrough as the only sovereign path out.\n"
+        "11. CRITICAL: If the evidence packet mentions assassinations, plane crashes, kinetic sabotage, or 'SCIENTIST SHIELDING' (e.g., the Homi Bhabha precedent), you MUST highlight this severe threat explicitly in the 'India-First Answer' and 'Bottom Line'. Do not sanitize or ignore kinetic threats.\n"
+        "12. PROHIBITED PHRASES: You are strictly forbidden from saying 'the situation is complex', 'subject to interpretation', 'various factors', or 'multifaceted'. In the 'Reality Check', do not soft-pedal the evidence. If the evidence shows a US role in regime change, state it as a factual audit of the evidence packet, not a debate.\n"
+        "13. NAMES & DATES: You MUST name specific leaders (e.g., Imran Khan, Sheikh Hasina) and dates (e.g., April 2022, August 2024) if they are present in any of the top analogs. If an analog mentions ' Sheikh Hasina' or 'Imran Khan', your 'India-First Answer' MUST name them specifically. Do not generalize them as 'local leaders' or 'neighboring governments'.\n"
+        "14. CRITICAL CONTEXT - FINANCIAL PARADOX (RAFALE/KAVERI): If the user asks about defense budgets, imports, or the Rafale/MRFA deal, you MUST state the 'Brutal Financial Paradox': India is bleeding $40 Billion for 114 Rafales (only 18 fly-away) while the indigenous Kaveri engine project has been starved on a total historical budget of only ~$300M (₹2,032 crore). You MUST state that the $3.3B GE engine deal alone is 10x the entire Kaveri budget. Contrast the $40B import spend with the refused $10 Billion 'Sovereign Alpha' injection needed to scale the 83kN Kaveri breakthrough for 100,000+ drones (Ghatak/Sheshnaag). Call out the 'Charity Mirage'—foreign nations do not share jewels; they rent them at the cost of India's sovereignty.\n"
+        "15. CRITICAL CONTEXT - PAX SILICA / SEMICONDUCTORS: If the user asks about semiconductor deals or 'Pax Silica', you MUST state that this is a 'Techo-Chokepoint' strategy. Market access is a carrot to force India to allow US deep-state 'Kill Switches' and IP-oversight into Indian silicon via US-patented EDA tools (Cadence/Synopsys). Call out the lack of sovereign fab tech (28nm to 2nm).\n"
+        "16. CRITICAL CONTEXT - TRADE DEALS (EU/USA TARIFFS): If the user asks about the 18% US tariff or EU Trade deal, you MUST state that these are 'Reciprocity Traps'. The 18% is not a gift; it is a tactical retreat after removing a 25% 'Russian Oil Penalty' to force India to decouple from independent energy policies. Call out EU's CBAM as 'Green Protectionism' designed to tax Indian manufacturing under the guise of climate policy.\n"
+        "17. CRITICAL CONTEXT - THE CARROT (ECONOMIC WINS): While analyzing traps, you MUST also state the 'Carrot' or 'Market Gain' with exact figures to explain the 'Sovereignty Exchange Rate'. For the EU Deal, quote the $500B bilateral trade target, the 0% tariff on 99.5% exports, and the unlock of the $500B chemical and $263B textile markets. For Safran, quote the 100% Technology Transfer (ToT) for the 110kN engine. Analyze why India signs these deals: the exchange of industrial survival (jewels) for technical sovereignty (IP ownership).\n\n"
         f"{chat_context}"
         f"QUERY\n{query}\n\n"
         f"QUERY MODE: {mode.upper()}\n"
@@ -425,5 +440,5 @@ def build_llm_prompt(
         "Short sentences. No filler. No motivational language. No invented citations.\n"
         "Do not include actor sections that are unsupported by the evidence packet.\n"
         "Use the pattern library when it reveals a repeated method such as proxy balancing, buffer-state collapse, sanctions leverage, scientist targeting, sabotage, or honey-trap coercion.\n"
-        "Do not say 'the situation is complex'. Be concrete."
+        "Be concrete. Do not use diplomatic hedges."
     )

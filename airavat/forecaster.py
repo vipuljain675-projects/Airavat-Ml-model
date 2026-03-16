@@ -33,6 +33,8 @@ RISK_BUCKET_MAP = {
     "SABOTAGE": "proxy_destabilization",
     "STRATEGIC": "diplomatic_pressure",
     "SOVEREIGNTY": "diplomatic_pressure",
+    "STRATEGIC_ENCIRCLEMENT": "proxy_destabilization",
+    "POLITICAL_WARFARE": "proxy_destabilization",
 }
 
 
@@ -52,9 +54,22 @@ class RiskForecaster:
         score_counter: Counter[str] = Counter()
         indicator_counter: Counter[str] = Counter()
 
+        def parse_score(val):
+            if isinstance(val, str):
+                v_upper = val.strip().upper()
+                if v_upper == "HIGH": return 0.9
+                elif v_upper == "MEDIUM": return 0.5
+                elif v_upper == "LOW": return 0.2
+                else:
+                    try: return float(val)
+                    except ValueError: return 0.5
+            return float(val or 0.0)
+
         total_weight = 0.0
         for event, similarity in analogs:
-            weight = similarity * event.confidence * (event.source_reliability / 5.0)
+            confidence = parse_score(event.confidence)
+            reliability = parse_score(event.source_reliability) / 5.0
+            weight = similarity * confidence * reliability
             total_weight += weight
 
             for event_type in event.event_types:

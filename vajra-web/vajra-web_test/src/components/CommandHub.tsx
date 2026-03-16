@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import StrategicArchive from "./StrategicArchive";
 import VajraSplash from "./VajraSplash";
 import ThreatWeb from "./ThreatWeb";
+import MultimediaCard from "./MultimediaCard";
 
 const tabs = [
   { id: "airavat", label: "Airavat AI", icon: Cpu },
@@ -300,7 +301,35 @@ export default function CommandHub() {
                               prose-headings:text-white prose-headings:font-semibold prose-headings:text-sm
                               prose-strong:text-white prose-code:text-orange-300 prose-li:text-gray-300
                               prose-a:text-orange-400">
-                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              <ReactMarkdown 
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                  a: ({ node, ...props }) => (
+                                    <a {...props} target="_blank" rel="noopener noreferrer">
+                                      {props.children}
+                                    </a>
+                                  ),
+                                  li: ({ node, children, ...props }) => {
+                                    // Extract text from children
+                                    const flatten = (node: any): string => {
+                                      if (typeof node === 'string') return node;
+                                      if (Array.isArray(node)) return node.map(flatten).join('');
+                                      if (node?.props?.children) return flatten(node.props.children);
+                                      return '';
+                                    };
+                                    
+                                    const textContent = flatten(children);
+                                    // Detect pattern "Title: URL"
+                                    const linkMatch = textContent.match(/(.*?):\s*(https?:\/\/[^\s]+)/);
+                                    
+                                    if (linkMatch && linkMatch[2].startsWith('http')) {
+                                       return <MultimediaCard title={linkMatch[1].trim()} url={linkMatch[2].trim()} />;
+                                    }
+                                    
+                                    return <li {...props} className="text-gray-300 mb-1">{children}</li>;
+                                  }
+                                }}
+                              >
                                 {msg.content}
                               </ReactMarkdown>
                             </div>

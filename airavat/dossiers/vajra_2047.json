@@ -1,0 +1,103 @@
+[
+  {
+    "event_id": "VAJRA-2047-PAGE-01",
+    "title": "VAJRA 2047: The Centennial Doctrine",
+    "category": "STRATEGIC DOCTRINE",
+    "date": "2047-08-15",
+    "summary": "India's transition from a regional balancer to a global pole. GDP goal of $30T by 2047.",
+    "scenario": "India in 2026 stands at $4.5 Trillion USD—the 4th largest economy on Earth, projected to cross $10T by 2035. Mission VAJRA 2047 replaces 'Strategic Autonomy' with 'Strategic Dominance'. Target: 98.4% Decision Authority Index.",
+    "actors": ["India", "Vajra Command"],
+    "regions": ["Global"],
+    "event_types": ["STRATEGIC", "SOVEREIGNTY"],
+    "keywords": "GDP, 30 trillion, 10 trillion, strategic dominance, 2035, 2047",
+    "deep_dive": {
+      "gdp_2026": "$4.5T",
+      "gips_capita_2026": "$3,000",
+      "population_2026": "1.44B"
+    }
+  },
+  {
+    "event_id": "VAJRA-2047-PAGE-02",
+    "title": "The Indian Lake Doctrine: Maritime Supremacy",
+    "category": "MARITIME STRATEGY",
+    "date": "2026-01-01",
+    "summary": "Converting the Indian Ocean into an 'Indian Lake' through chokepoint control.",
+    "scenario": "Indian Navy operates 150+ warships. INS Vikrant and INS Vikramaditya are active. Goal: Control Malacca, Hormuz, and Bab-el-Mandeb. Target: 5 Aircraft Carriers by 2047.",
+    "actors": ["Indian Navy"],
+    "regions": ["Indian Ocean", "Malacca Strait", "Hormuz Strait"],
+    "event_types": ["MARITIME", "MILITARY"],
+    "keywords": "warships, aircraft carrier, indian lake, malacca, vikrant",
+    "deep_dive": {
+      "fleet_size": "150+",
+      "carriers_active": 2,
+      "nuke_subs": "2+"
+    }
+  },
+  {
+    "event_id": "VAJRA-2047-PAGE-03",
+    "title": "Air Dominance: The 30-Squadron Crisis",
+    "category": "MILITARY READINESS",
+    "date": "2026-01-01",
+    "summary": "IAF squadron deficit: 30 active vs 42 sanctioned.",
+    "scenario": "IAF strength is at 30 squadrons representing a 28% deficit. Su-30MKI (15SQ), Rafale (2SQ), Tejas (2SQ) are key assets. Fix: Tejas Mk2 (+4 SQ by 2030), AMCA 6th Gen.",
+    "actors": ["IAF", "HAL"],
+    "regions": ["India"],
+    "event_types": ["MILITARY", "TECHNOLOGY"],
+    "keywords": "IAF, squadron, tejas, rafale, amca, 30 squadrons",
+    "deep_dive": {
+      "current_squadrons": 30,
+      "sanctioned_squadrons": 42,
+      "deficit": "28%"
+    }
+  },
+  {
+    "event_id": "VAJRA-2047-PAGE-04",
+    "title": "Hypersonic Overmatch: First-Strike Certainty",
+    "category": "STRATEGIC DETERRENCE",
+    "date": "2026-01-01",
+    "summary": "Adoption of 'First-Strike Certainty' with Agni-VI-H Hypersonic missiles.",
+    "scenario": "Agni-VI-H at Mach 12+ makes every existing missile shield (Patriot, S-400, THAAD) obsolete. Indian nuclear triad status: Land (100%), Sea (85%), Air (90%).",
+    "actors": ["DRDO", "Strategic Forces Command"],
+    "regions": ["Global"],
+    "event_types": ["MILITARY", "STRATEGIC"],
+    "keywords": "hypersonic, mach 12, agni-vi-h, first-strike, nuclear triad",
+    "deep_dive": {
+      "speed": "Mach 12+",
+      "warhead_count": "160-170",
+      "range": "11,000+ km"
+    }
+  },
+  {
+    "event_id": "VAJRA-2047-PAGE-06",
+    "title": "Digital Sovereignty: The Big Lie",
+    "category": "CYBER SOVEREIGNTY",
+    "date": "2026-01-01",
+    "summary": "Assessment of India's digital infrastructure as 100% US-controlled.",
+    "scenario": "India's digital backbone (AWS, Azure, Android, Chips) is owned by US corporations. Sovereignty scores: Cloud (3%), AI (1%), Chips (5%). Target: BharatCloud (70% sovereign).",
+    "actors": ["USA", "India"],
+    "regions": ["Digital"],
+    "event_types": ["TECHNOLOGY", "SOVEREIGNTY"],
+    "keywords": "digital sovereignty, cloud, aws, chips, bharatcloud, android",
+    "deep_dive": {
+      "cloud_sovereignty": "3%",
+      "us_control": "95%+"
+    }
+  },
+  {
+    "event_id": "VAJRA-2047-PAGE-17",
+    "title": "Unfinished Business: The Critical Gaps",
+    "category": "STRATEGIC GAPS",
+    "date": "2026-01-01",
+    "summary": "Summary of critical vulnerabilities: Engines, Chips, and Squadron deficits.",
+    "scenario": "Kaveri Engine (83kN dry) needs to reach 110kN. IAF 12 SQ gap requires 24 aircraft/year production. Carrier expansion to 5 requires mastering naval reactors.",
+    "actors": ["DRDO", "HAL", "BARC"],
+    "regions": ["India"],
+    "event_types": ["TECHNOLOGY", "MILITARY"],
+    "keywords": "kaveri, engine, semiconductors, squadron gap, carrier",
+    "deep_dive": {
+      "kaveri_thrust": "83kN",
+      "target_thrust": "110kN",
+      "production_rate": "8/year"
+    }
+  }
+]
