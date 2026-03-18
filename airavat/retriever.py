@@ -99,9 +99,14 @@ class AnalogRetriever:
         keyword_str = " ".join(event.keywords) if isinstance(event.keywords, list) else event.keywords
         keyword_tokens = set(_tokenize(keyword_str))
         note_tokens = set(_tokenize(event.notes))
-        deep_tokens = set(
-            _tokenize(" ".join(str(v) for v in (event.deep_dive or {}).values()))
-        )
+        if event.deep_dive:
+            if isinstance(event.deep_dive, dict):
+                deep_text = " ".join(str(v) for v in event.deep_dive.values() if isinstance(v, str))
+            else:
+                deep_text = str(event.deep_dive)
+            deep_tokens = set(_tokenize(deep_text))
+        else:
+            deep_tokens = set()
         actor_tokens = set(_tokenize(" ".join(event.actors)))
         region_tokens = set(_tokenize(" ".join(event.regions)))
         type_tokens = set(_tokenize(" ".join(event.event_types)))
@@ -154,3 +159,43 @@ class AnalogRetriever:
         adjustment += confidence * 0.03
         adjustment += reliability * 0.02
         return adjustment
+
+    def multi_hop_retrieve(self, query: str, top_k: int = 5) -> list[tuple[StrategicEvent, float]]:
+        """
+        Performs a two-hop search:
+        1. Find primary semantic matches.
+        2. Identify key actors/themes.
+        3. Search for 'Resonance Analogs' (the 'Why' behind the 'What').
+        """
+        # Hop 1: Primary Search
+        primary_results = self.retrieve(query, top_k=top_k)
+        if not primary_results:
+            return []
+
+        # Identify 'Strategic Resonance' entities (actors + regions)
+        resonance_actors = set()
+        for event, _ in primary_results:
+            # Add non-India actors to the resonance pool
+            resonance_actors.update([a.upper() for a in event.actors if a.upper() not in ("INDIA", "UNKNOWN")])
+
+        if not resonance_actors:
+             return primary_results
+
+        # Hop 2: Look for historical 'Resonance Analogs' involving these actors + betrayal/denial themes
+        # This connects AUKUS (Betrayal) to Safran (Deals) automatically
+        hop2_query = " ".join(list(resonance_actors)[:3]) + " betrayal revenge sabotage tech denial"
+        hop2_results = self.retrieve(hop2_query, top_k=3)
+
+        # Merge results, prioritizing primary but including resonance background
+        final_map = {e.event_id: (e, s) for e, s in primary_results}
+        for e, s in hop2_results:
+            if e.event_id not in final_map:
+                # Add resonance analogs with a lower score weighting for historical context
+                final_map[e.event_id] = (e, s * 0.7)
+            else:
+                # Boost if found in both primary and resonance hops
+                existing_e, existing_s = final_map[e.event_id]
+                final_map[e.event_id] = (existing_e, existing_s + (s * 0.15))
+
+        # Re-sort and take unified top_k + 2 (to show the 'Hidden Thread')
+        return sorted(final_map.values(), key=lambda x: x[1], reverse=True)[:top_k + 2]

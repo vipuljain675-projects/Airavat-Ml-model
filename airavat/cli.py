@@ -47,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--groq-model",
-        default="llama-3.3-70b-versatile",
+        default="llama-3.1-8b-instant",
         help="Groq model name when --llm groq is used.",
     )
     return parser

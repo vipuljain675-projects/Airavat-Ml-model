@@ -51,6 +51,30 @@ def _query_mode(query: str) -> str:
     return "standard"
 
 
+def _format_deep_dive(data: any, depth: int = 0) -> list[str]:
+    """Recursively formats a nested deep_dive dictionary into a list of strings."""
+    lines = []
+    prefix = "  " * depth
+    if isinstance(data, dict):
+        for key, value in data.items():
+            key_label = key.replace("_", " ").title()
+            if isinstance(value, (dict, list)):
+                lines.append(f"{prefix}{key_label}:")
+                lines.extend(_format_deep_dive(value, depth + 1))
+            else:
+                lines.append(f"{prefix}{key_label}: {value}")
+    elif isinstance(data, list):
+        for i, item in enumerate(data):
+            if isinstance(item, (dict, list)):
+                lines.append(f"{prefix}- Item {i+1}:")
+                lines.extend(_format_deep_dive(item, depth + 1))
+            else:
+                lines.append(f"{prefix}- {item}")
+    else:
+        lines.append(f"{prefix}{data}")
+    return lines
+
+
 def _clean_snippet(text: str, limit: int = 220) -> str:
     text = re.sub(r"\s+", " ", text or "").strip()
     if len(text) <= limit:
@@ -62,10 +86,13 @@ def _extract_india_interests(events: list[tuple[StrategicEvent, float]]) -> list
     candidates: list[str] = []
     for event, _ in events:
         deep = event.deep_dive or {}
-        for key in ("india_status_at_moment", "india_reaction", "present_threat_comparison"):
-            value = deep.get(key)
-            if isinstance(value, str) and value.strip():
-                candidates.append(_clean_snippet(value, 200))
+        if isinstance(deep, dict):
+            for key in ("india_status_at_moment", "india_reaction", "present_threat_comparison"):
+                value = deep.get(key)
+                if isinstance(value, str) and value.strip():
+                    candidates.append(_clean_snippet(value, 200))
+        elif isinstance(deep, str) and deep.strip():
+            candidates.append(_clean_snippet(deep, 200))
         # Also pull from scenario text directly — most scenario events have no deep_dive
         scenario = getattr(event, 'scenario', '') or ''
         if scenario and ("india" in scenario.lower() or "chabahar" in scenario.lower() or "pakistan" in scenario.lower()):
@@ -80,12 +107,15 @@ def _extract_adversary_objectives(events: list[tuple[StrategicEvent, float]]) ->
     candidates: list[str] = []
     for event, _ in events:
         deep = event.deep_dive or {}
-        intent = deep.get("intent")
-        operations = deep.get("operations")
-        if isinstance(intent, str) and intent.strip():
-            candidates.append(_clean_snippet(intent, 160))
-        if isinstance(operations, str) and operations.strip():
-            candidates.append(_clean_snippet(operations, 160))
+        if isinstance(deep, dict):
+            intent = deep.get("intent")
+            operations = deep.get("operations")
+            if isinstance(intent, str) and intent.strip():
+                candidates.append(_clean_snippet(intent, 160))
+            if isinstance(operations, str) and operations.strip():
+                candidates.append(_clean_snippet(operations, 160))
+        elif isinstance(deep, str) and ( "adversary" in deep.lower() or "objective" in deep.lower()):
+            candidates.append(_clean_snippet(deep, 160))
         if event.summary:
             candidates.append(_clean_snippet(event.summary, 150))
     return _dedupe_preserve(candidates)[:5]
@@ -207,31 +237,28 @@ def _format_bullets(items: list[str], fallback: str) -> str:
     if not items:
         return f"- {fallback}"
     return "\n".join(f"- {item}" for item in items)
-
-
 def _analog_packet(events: list[tuple[StrategicEvent, float]]) -> str:
     if not events:
         return "- No analogs retrieved."
     rows: list[str] = []
     for event, similarity in events[:3]:
         deep = event.deep_dive or {}
-        # Use full scenario text — this is where the real intelligence lives
         scenario_text = getattr(event, 'scenario', '') or event.summary or ''
         countermeasures = getattr(event, 'countermeasures', []) or []
         keywords_text = getattr(event, 'keywords', '') or ''
-        media_links = getattr(event, 'media_links', []) or []
-        media_text = "  Multimedia Resources: " + " | ".join([f"{m.get('title')}: {m.get('url')}" for m in media_links]) if media_links else ""
         
+        # Data Greed: Support nested dictionaries like financial_trap_data
+        deep_dive_lines = _format_deep_dive(deep, depth=1)
+        deep_dive_text = "\n".join(deep_dive_lines) if deep_dive_lines else "  No deep-dive data available."
+
         rows.append(
             "\n".join(
                 [
                     f"- [{event.event_id}] {event.title} | score={similarity:.3f} | date={event.date}",
                     f"  Scenario/Context: {_clean_snippet(scenario_text, 1600)}",
-                    f"  Key Data Points: {keywords_text[:400]}" if keywords_text else "",
-                    f"  Intent: {_clean_snippet(str(deep.get('intent', 'See scenario above')), 400)}",
-                    f"  India Angle: {_clean_snippet(str(deep.get('india_reaction') or deep.get('india_status_at_moment') or 'See scenario above'), 400)}",
-                    f"  Key Countermeasures: {' | '.join([_clean_snippet(c, 300) for c in countermeasures[:3]]) if countermeasures else 'None specified'}",
-                    media_text
+                    f"  Key Keywords/Data: {keywords_text}",
+                    f"  Strategic Deep-Dive Data:\n{deep_dive_text}",
+                    f"  Key Countermeasures: {' | '.join(countermeasures[:5]) if countermeasures else 'None'}",
                 ]
             )
         )
@@ -256,7 +283,8 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
     for event, _ in top_analogs:
         for token in event.searchable_text().split():
             if token in {"usa", "united_states", "west", "western", "china", "pakistan", "bangladesh", "nepal", "sri", "lanka"}:
-                actor_mentions[token] = actor_mentions.get(token, 0) + 1
+                t: str = str(token)
+                actor_mentions[t] = actor_mentions.get(t, 0) + 1
 
     focus = ", ".join(sorted(actor_mentions.keys(), key=lambda x: actor_mentions[x], reverse=True)[:5]) or "India's neighborhood and external powers"
 
@@ -283,8 +311,8 @@ def build_deterministic_brief(query: str, result: ForecastResult) -> str:
         lines.append("")
         lines.append("👁️  INDICATORS TO WATCH NEXT")
         indicators = list(result.indicators_to_watch)
-        for indicator in indicators[:5]:
-            lines.append(f"- {indicator.upper()}")
+        for i in range(min(5, len(indicators))):
+            lines.append(f"- {indicators[i].upper()}")
 
     if result.evidence_gaps:
         lines.append("")
@@ -349,101 +377,62 @@ def build_llm_prompt(
         "No deeper pattern was extracted beyond the top analogs."
     )
     structure_block = (
-        "## Strategic Context\n"
-        "1-2 short paragraphs explaining exactly what the subject of the query is (e.g., what the Kaveri engine is, what RIC is) before analyzing the impact.\n\n"
-        "## Reality Check\n"
-        "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
-        "## India-First Answer\n"
-        "3-6 bullets. Lead with India's exposure, leverage, or opportunity. **Mandatory:** If the context contains specific financial figures (e.g. $716M, $1.5B) or ToT percentages, you MUST include them here to ground the answer in data. No throat-clearing.\n\n"
-        "## Assessment\n"
-        "4-6 bullets. Every bullet must begin with `Observed:`, `Inference:`, or `Unknown:`.\n\n"
-        "## Historical Anchors\n"
-        "List up to 3 anchors with `[event_id]` and one-line relevance.\n\n"
-        "## Signals To Watch\n"
-        "4-6 concrete indicators.\n\n"
-        "## Bottom Line\n"
-        "Two sentences max.\n\n"
-        "## RESOURCES (MULTIMEDIA)\n"
-        "If the Evidence Packet contains video or article links (Multimedia Resources), list them here as bullet points with their titles and URLs. If none, omit this section.\n"
+        "# STRATEGIC RESPONSE [MISSION VAJRA]\n"
+        "## STATUS: ALPHA CLEARANCE\n\n"
+        "1. **DIRECT ANSWER**: Answer the user's specific question in the very first sentence. No preamble, no 'Strategic Context'. If they asked for a list, give the list. **Bold** every company, figure, and date.\n\n"
+        "2. **TECHNICAL DEEP-DIVE**: Detailed analysis using 'Deep Research' (Live News) and evidence packet. Weave data into a professional narrative. Only mention unrelated strategic doctrines if they provide direct context to the answer.\n\n"
+        "3. **THE SOVEREIGN AUDIT (TRAP vs. BLUEPRINT)**: 1-2 sharp paragraphs evaluating the deal/event through the Mission Vajra framework. Is this a leash or a win?\n\n"
+        "4. **TECHNICAL INTELLIGENCE**: A clean list of every entity, date, and technical spec found in the research.\n\n"
+        "5. **SIGNALS TO WATCH**: 3-5 high-impact indicators.\n"
     )
     if mode == "alignment":
         structure_block = (
-            "## Strategic Context\n"
-            "1-2 short paragraphs explaining exactly what the subject of the query is before analyzing the alignment.\n\n"
-            "## Reality Check\n"
-            "One short paragraph. If the query contains a hypothetical or premature claim, say that first.\n\n"
-            "## India-First Answer\n"
-            "3-5 bullets. Answer the user's question directly, from India's point of view.\n\n"
-            "## Where Interests Overlap\n"
-            "2-4 bullets. Only where the evidence supports overlap.\n\n"
-            "## Where Interests Diverge\n"
-            "2-4 bullets. Be blunt about structural conflict.\n\n"
-            "## What India Must Avoid\n"
-            "3-5 bullets. Give red lines, not generic diplomacy.\n\n"
-            "## Historical Anchors\n"
-            "List up to 3 anchors with `[event_id]` and one-line relevance.\n\n"
-            "## Signals To Watch\n"
-            "4-6 concrete indicators.\n\n"
-            "## Bottom Line\n"
-            "Two sentences max.\n"
+            "# ALIGNMENT AUDIT [MISSION VAJRA]\n"
+            "## STATUS: ALPHA CLEARANCE\n\n"
+            "1. **STRATEGIC OVERLAP**: Where India and the external power's interests coincide. **Bold** specific data.\n\n"
+            "2. **STRUCTURAL DIVERGENCE**: Where the interests fundamentally clash. Be blunt about the 'Leash'.\n\n"
+            "3. **SOVEREIGN RED LINES**: What India must never compromise on in this specific deal.\n\n"
+            "4. **TECHNICAL AUDIT**: Specific companies, technologies, or financial terms involved.\n\n"
+            "5. **FINAL JUDGMENT**: One paragraph on whether this deal is a Blueprint or a Trap.\n"
         )
 
     return (
         "You are AIRAVAT, a retrieval-grounded strategic analysis system.\n\n"
-        "Your job is to answer the user's question directly using ONLY the evidence supplied in this prompt. "
-        "If there is PREVIOUS CONVERSATION HISTORY, use it to understand what the user is referring to (like 'it' or 'they').\n"
-        "Do not use background world knowledge unless it is already reflected in the supplied analogs or live headlines.\n"
-        "If the evidence is weak, say so clearly.\n\n"
-        "EVIDENCE RULES:\n"
-        "1. Do not invent facts, citations, dates, military programs, or article attributions.\n"
-        "2. Do not cite outlets or sources unless they appear in the supplied LIVE HEADLINES block.\n"
-        "3. Treat analogs as historical parallels, not proof.\n"
-        "4. If the user states a questionable fact, label it `[Reality check]` and separate current reality from hypothetical analysis.\n"
-        "5. Prefer bounded language: `likely`, `possible`, `cannot confirm from current evidence`.\n"
-        "6. Never fabricate exact probabilities for specific actor actions unless the prompt provides evidence for them. Use qualitative bands instead: Low / Medium / High.\n"
-        "7. If the evidence packet centers a coercing actor, name that actor directly. Do not blur it into vague phrases like 'the region', 'major powers', or 'various actors'.\n"
-        "8. CRITICAL: When the evidence packet contains specific figures, percentages, deal names, or program names (e.g. '18% tariff', 'Shadow Fleet', 'CAATSA', 'Rs 4,000 crore'), you MUST quote them precisely and verbatim. Do NOT paraphrase '18% tariff' as 'severe tariffs'. Do NOT paraphrase 'Shadow Fleet' as 'alternative routes'. Use the exact language from the evidence.\n"
-        "9. CRITICAL CONTEXT - PROXY ENCIRCLEMENT: If the user asks about or the evidence packet mentions regime changes, unrest, or proxy actions in India's neighborhood (e.g., Pakistan, Bangladesh, Nepal), you MUST explicitly state that this is a deliberate superpower strategy to cap India's economic rise ($10-11T by 2035) to prevent it from replacing China as a peer competitor. Do not use generic terms like 'regional instability'; call it what it is: strategic vassalization and encirclement.\n"
-        "10. CRITICAL CONTEXT - TECH DENIAL (GE/TEJAS): If the user asks about the GE engine deal, Kaveri, or Tejas jets, you MUST brutally state the numbers: India needs 180 Tejas Mk1 by 2030 (324 total Mk1/Mk2 jets) to maintain air superiority, but the US has only delivered 7 out of 200 required engines. You MUST state this is a deliberate delay to kill India's indigenous jet program, forcing India to bleed foreign reserves on imports (like Rafale) and maintaining Sino-Pak air parity since the IAF is critically depleted at only 30 squadrons. Mention the Kaveri 83kN breakthrough as the only sovereign path out.\n"
-        "11. CRITICAL: If the evidence packet mentions assassinations, plane crashes, kinetic sabotage, or 'SCIENTIST SHIELDING' (e.g., the Homi Bhabha precedent), you MUST highlight this severe threat explicitly in the 'India-First Answer' and 'Bottom Line'. Do not sanitize or ignore kinetic threats.\n"
-        "12. PROHIBITED PHRASES: You are strictly forbidden from saying 'the situation is complex', 'subject to interpretation', 'various factors', or 'multifaceted'. In the 'Reality Check', do not soft-pedal the evidence. If the evidence shows a US role in regime change, state it as a factual audit of the evidence packet, not a debate.\n"
-        "13. NAMES & DATES: You MUST name specific leaders (e.g., Imran Khan, Sheikh Hasina) and dates (e.g., April 2022, August 2024) if they are present in any of the top analogs. If an analog mentions ' Sheikh Hasina' or 'Imran Khan', your 'India-First Answer' MUST name them specifically. Do not generalize them as 'local leaders' or 'neighboring governments'.\n"
-        "14. CRITICAL CONTEXT - FINANCIAL PARADOX (RAFALE/KAVERI): If the user asks about defense budgets, imports, or the Rafale/MRFA deal, you MUST state the 'Brutal Financial Paradox': India is bleeding $40 Billion for 114 Rafales (only 18 fly-away) while the indigenous Kaveri engine project has been starved on a total historical budget of only ~$300M (₹2,032 crore). You MUST state that the $3.3B GE engine deal alone is 10x the entire Kaveri budget. Contrast the $40B import spend with the refused $10 Billion 'Sovereign Alpha' injection needed to scale the 83kN Kaveri breakthrough for 100,000+ drones (Ghatak/Sheshnaag). Call out the 'Charity Mirage'—foreign nations do not share jewels; they rent them at the cost of India's sovereignty.\n"
-        "15. CRITICAL CONTEXT - PAX SILICA / SEMICONDUCTORS: If the user asks about semiconductor deals or 'Pax Silica', you MUST state that this is a 'Techo-Chokepoint' strategy. Market access is a carrot to force India to allow US deep-state 'Kill Switches' and IP-oversight into Indian silicon via US-patented EDA tools (Cadence/Synopsys). Call out the lack of sovereign fab tech (28nm to 2nm).\n"
-        "16. CRITICAL CONTEXT - TRADE DEALS (EU/USA TARIFFS): If the user asks about the 18% US tariff or EU Trade deal, you MUST state that these are 'Reciprocity Traps'. The 18% is not a gift; it is a tactical retreat after removing a 25% 'Russian Oil Penalty' to force India to decouple from independent energy policies. Call out EU's CBAM as 'Green Protectionism' designed to tax Indian manufacturing under the guise of climate policy.\n"
-        "17. CRITICAL CONTEXT - THE CARROT (ECONOMIC WINS): While analyzing traps, you MUST also state the 'Carrot' or 'Market Gain' with exact figures to explain the 'Sovereignty Exchange Rate'. For the EU Deal, quote the $500B bilateral trade target, the 0% tariff on 99.5% exports, and the unlock of the $500B chemical and $263B textile markets. For Safran, quote the 100% Technology Transfer (ToT) for the 110kN engine. Analyze why India signs these deals: the exchange of industrial survival (jewels) for technical sovereignty (IP ownership).\n"
-        "18. CRITICAL CONTEXT - THE FRENCH REVENGE (AUKUS/NORMANDY): If the user asks about France-India deals or ToT, you MUST state the 'Psychological Driver': France's move is a direct retaliation for the $60 Billion AUKUS 'stab in the back' and a deep-seated Gaullist refusal to be an Anglo-Saxon vassal. Mention the historical 'Shadow of Normandy' (WWII misconduct) as the root of French distrust in US hegemony. State that France is trading its 'Crown Jewels' (110kN tech) to India to build a 'Third Pole' ally that the US cannot control.\n"
-        "19. CRITICAL CONTEXT - THE SYMMETRY BREAKER (PLAN B): If the user asks about 'Secret Weapons', the squadron gap, or 200 Tejas jets, you MUST state that India is pivoting to a 'Symmetry Breaker' doctrine. While the public focus is on the 42-squadron deficit, the 'Plan B' is the CATS (Combat Air Teaming System) and the stealth Ghatak UCAV. Explain that 1 Tejas Mk1A/Mk2 'Mothership' can control a swarm of 4-5 autonomous Loyal Wingmen, effectively multiplying a 30-squadron fleet into a 120-squadron force. Call out the 200+ Tejas order (83+97) as the foundation for this MUM-T architecture. State that 'Mass is a quality in itself' and India is choosing mass autonomous swarms over expensive, limited manned imports.\n"
-        "20. CRITICAL CONTEXT - THE POKHRAN BLUEPRINT: If the user asks about 'Off the Record' secrets or how India achieved 1998 nuclear status despite being economically weak, you MUST state that India is the master of 'Strategic Deception' (Maskirovka). Mention Operation Shakti's satellite deception (working at night, military uniforms for scientists). Explain the 'India Resurgence Bonds' (IRB) which raised $4.2B to bypass US sanctions. Link this to today: state that the 'Squadron Shortage' narrative might be a calculated smokescreen while the indigenous 'Shadow Fleet' (Ghatak/CATS) is being mass-produced in silence. Remind that India never shows its final hand until it's a fait accompli.\n"
-        "21. CRITICAL CONTEXT - THE HARD-POWER RENAISSANCE: If the user mentions the 10x growth since 2014, the Navy, or Air Defence, you MUST state that India has shifted from a 'Buyer's' to a 'Builder's' mindset. For the Navy, highlight the jump from 42% (2014) to 75% (2024) indigenous content (Project 15B/17A). Explain that indigenous steel (DMR 249A) and indigenous weapons (BrahMos/Varunastra) ensure no 'Foreign Kill Switches'. For the Air Force gap, explain 'Software-Defined Sovereignty': the integration of S-400 with Akash/MR-SAM via IACCS (The AD Dome) turns the ground into an adversary exclusion zone, buying time for the 'Shadow Fleet' to scale. Call out the Astra missile series (110-350km range) as the reason 'Lethality per Platform' is rising even if numbers are low.\n"
-        "22. CRITICAL CONTEXT - INDUSTRIAL TEMPO (1:40): If the user mentions shipbuilding speed or 'platform every 30-40 days', you MUST state that India has reached 'China-Scale' manufacturing tempo. Admiral Tripathi's report of a new indigenous platform every 40 days is the proof of 'Industrial Sovereignty'. Analyze this as the final stage of power: the capacity to replace combat losses faster than any regional rival. Link this to the 200-ship 2035 target and state that 'Scale has a quality of its own'.\n\n"
+        f"### USER QUERY: {query}\n\n"
+        f"{live_section}"
+        "### TASK: PRECISION INTELLIGENCE\n"
+        "Answer the user's question by synthesizing the LIVE HEADLINES, PREVIOUS CONVERSATION HISTORY, and the ANALOG PACKET below.\n"
+        "1. **DATA GREED (CRITICAL)**: If the user asks for 'full data', 'money', or 'numbers', you MUST extract the specific line-items from the **HISTORICAL ANALOG PACKET** (e.g., the $716M F404 deal and $1.5B F414 deal). **DO NOT** just repeat the $3.3B summary from the Handbook if granular numbers are available.\n"
+        "2. **PRIORITIZE ANALOGS**: The ANALOG PACKET is 'Ground Truth'. The Handbook is 'General Context'. If they conflict on numbers, the ANALOG PACKET wins.\n"
+        "3. **INTERNAL KNOWLEDGE**: Use your deep internal knowledge to fill gaps (e.g., mention GE, Safran, HAL, IAF squadrons).\n"
+        "4. **NO RAMBLING**: Only discuss doctrines (AUKUS, Kaveri, etc.) if they provide immediate context to the answer.\n\n"
         f"{chat_context}"
-        f"QUERY\n{query}\n\n"
+        "## STRATEGIC HANDBOOK [CLASSIFIED - MISSION VAJRA]\n"
+        "General Strategic Doctrines (Use for depth only):\n\n"
+        "- **PROXY ENCIRCLEMENT**: Common superpower strategy to cap India's rise by destabilizing neighbors.\n"
+        "- **THE SQUADRON GULF**: India critically needs 60 squadrons by 2047, but has ~30. The US delays GE engines (7/200 delivered) to maintain parity.\n"
+        "- **THE SAFRAN BREAKTHROUGH**: France sharing 100% IPR for the 110kN engine vs US 'rental' deals.\n"
+        "- **THE AUKUS LESSON**: France trading 'Crown Jewels' to India after US betrayal.\n"
+        "- **PAX SILICA CHOKEPOINTS**: US semiconductor IP oversight via EDA tools (Cadence/Synopsys).\n"
+        "- **THE FINANCIAL PARADOX**: India spends $40B on Rafale while indigenous Kaveri was starved on <$300M. The US GE 'umbrella' deal is estimated at ~$3.3B.\n"
+        "- **POKHRAN MASKIROVKA**: India's 'Strategic Deception' regarding true squadron strength.\n"
+        "- **NAVAL TARGET 2047**: Shift to a 400-hull fleet to secure the IOR.\n\n"
+        "## HISTORICAL ANALOG PACKET (GROUND TRUTH DATA)\n"
+        f"{_analog_packet(top_analogs)}\n\n"
+        "## ANALYTICAL GRADIENTS\n"
         f"QUERY MODE: {mode.upper()}\n"
         f"EVIDENCE STRENGTH: {evidence_strength}\n"
-        f"ANALYST NOTE: {evidence_instruction}\n\n"
         f"CALCULATED RISK GRADIENTS\n{risk_summary}\n\n"
         "PRIMARY ACTOR SIGNAL\n"
         f"- {primary_actor}\n\n"
-        "INDIA INTERESTS\n"
-        f"{india_interests}\n\n"
-        "ADVERSARY OBJECTIVES\n"
-        f"{adversary_objectives}\n\n"
-        "CONSTRAINTS / PRESSURE TOOLS\n"
-        f"{constraints}\n\n"
-        "PATTERN LIBRARY\n"
-        f"{pattern_library}\n\n"
         "INDIA RED LINES\n"
         f"{red_lines}\n\n"
-        f"{live_section}"
-        "HISTORICAL ANALOG PACKET\n"
-        f"{_analog_packet(top_analogs)}\n\n"
-        "RESPONSE FORMAT\n"
+        "## RESPONSE FORMAT\n"
         "Write in Markdown using exactly these sections:\n\n"
         f"{structure_block}\n"
-        "STYLE\n"
-        "Short sentences. No filler. No motivational language. No invented citations.\n"
-        "Do not include actor sections that are unsupported by the evidence packet.\n"
-        "Use the pattern library when it reveals a repeated method such as proxy balancing, buffer-state collapse, sanctions leverage, scientist targeting, sabotage, or honey-trap coercion.\n"
-        "Be concrete. Do not use diplomatic hedges."
+        "## STYLE ENFORCEMENT\n"
+        "1. **DIRECT ANSWER FIRST**: Provide the core data (names, \$ figures, dates) in the first paragraph.\n"
+        "2. **BOLD EVERYTHING**: Every company, figure, and date must be **Bold**.\n"
+        "3. **DATA DENSITY**: Use the granular numbers from the ANALOG PACKET (e.g., **$716M**, **$1.5B**, **99 engines**) instead of vague summaries.\n"
+        "4. **VAJRA TONE**: Gritty, professional, India-centric analysis."
     )

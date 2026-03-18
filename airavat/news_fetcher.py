@@ -123,10 +123,16 @@ def fetch_live_headlines(max_items: int = 8, query: str | None = None) -> list[d
             "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", 
             "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", 
             "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", "problem", "going", "impact", 
-            "falls", "apart", "fuck", "last", "days", "pls", "catch", "man", "oh", "saying", "like"
+            "falls", "apart", "fuck", "last", "days", "pls", "catch", "man", "oh", "saying", "like", "tell", "more", 
+            "explain", "deeply", "about", "which", "were", "involved", "its", "his", "her", "their", "did"
         }
         words = [w for w in re.findall(r'\b[a-zA-Z0-9-]+\b', query) if w.lower() not in stop_words and len(w) > 2]
+        
+        # Priority Keywords for Bharat-Centric Geopolitics
+        priority_kws = ["India", "modi", "geopolitics", "defense", "trade"]
         search_term = " ".join(words) if words else query
+        if not any(pk.lower() in search_term.lower() for pk in priority_kws):
+             search_term += " India geopolitics"
 
         import urllib.parse
         encoded_q = urllib.parse.quote(search_term)

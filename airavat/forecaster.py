@@ -45,7 +45,8 @@ class RiskForecaster:
         self.risk_model = train_risk_model(events)
 
     def forecast(self, query: str, top_k: int = 10, live_news: list[dict] | None = None) -> ForecastResult:
-        analogs = self.retriever.retrieve(query, top_k=top_k)
+        # Use the new Multi-Hop retrieval to find 'The Hidden Thread'
+        analogs = self.retriever.multi_hop_retrieve(query, top_k=top_k)
         boosted_ids: set[str] = set()
 
         if live_news:

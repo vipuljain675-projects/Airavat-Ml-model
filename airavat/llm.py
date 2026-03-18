@@ -53,15 +53,15 @@ class GroqClient:
 
         client = Groq(api_key=self.api_key)
 
-        # Prepend system message if not present
-        if not messages or messages[0].get("role") != "system":
+        # Prepend default system message only if no system message is provided in the list
+        has_system = any(msg.get("role") == "system" for msg in messages)
+        if not has_system:
             messages.insert(0, {
                 "role": "system",
                 "content": (
                     "You are AIRAVAT, a retrieval-grounded strategic analysis system. "
-                    "Use only evidence provided in the prompt. "
-                    "If evidence is weak or missing, say so directly. "
-                    "Never invent citations, articles, probabilities, dates, or operational details. "
+                    "Synthesize the provided evidence with your own deep internal geopolitical, economic, and industrial knowledge. "
+                    "If evidence is weak, use your internal knowledge to provide a 'Vajra-Grade' Deep Dive, but label it as such. "
                     "Keep the answer concise, direct, and analyst-style."
                 ),
             })
@@ -69,7 +69,7 @@ class GroqClient:
         chat_completion = client.chat.completions.create(
             messages=messages,
             model=self.model,
-            temperature=0.2,
+            temperature=0.7,
         )
 
         response = chat_completion.choices[0].message.content.strip()

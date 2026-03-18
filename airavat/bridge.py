@@ -48,12 +48,20 @@ async def analyze(request: AnalysisRequest):
         
         forecaster = RiskForecaster(database)
         
+        # Combine chat history context with current query for the forecaster (pronominal resolution)
+        search_query = request.query
+        if request.chat_history:
+            # Look at the last user message to extract context if the current query is short/ambiguous
+            last_user_msgs = [msg["content"] for msg in request.chat_history if msg["role"] == "user"]
+            if last_user_msgs and (len(request.query.split()) < 8 or any(p in request.query.lower() for p in [" it", " they", " them", " this", " that"])):
+                context_words = " ".join(last_user_msgs[-1].split()[-15:]) # Take last 15 words of previous turn
+                search_query = f"{context_words} {request.query}"
+
         headlines = []
         if request.include_news:
-            # Use the correct function name
-            headlines = fetch_live_headlines(query=request.query)
+            headlines = fetch_live_headlines(query=search_query)
             
-        result = forecaster.forecast(request.query, top_k=5, live_news=headlines)
+        result = forecaster.forecast(search_query, top_k=7, live_news=headlines)
         
         # Build the brief — pass live news into the prompt so LLM can analyze each article
         from airavat.explainer import build_deterministic_brief, build_llm_prompt
@@ -81,7 +89,7 @@ async def analyze(request: AnalysisRequest):
         
         # Format analogs for JSON — use category as title fallback, 'Ongoing' as date fallback
         analogs = []
-        for event, score in result.analogs:
+        for event, similarity in list(result.analogs)[:3]:
             display_title = event.title if event.title != "Classified Event" else (event.scenario[:80] or " / ".join(event.event_types) or "Strategic Event")
             display_date = event.date if event.date != "1900-01-01" else "Ongoing"
             analogs.append({
@@ -90,7 +98,7 @@ async def analyze(request: AnalysisRequest):
                 "date": display_date,
                 "category": "/".join(event.event_types),
                 "scenario": event.summary,
-                "similarity": round(float(score), 3)
+                "similarity": round(float(similarity), 3)
             })
             
         return AnalysisResponse(

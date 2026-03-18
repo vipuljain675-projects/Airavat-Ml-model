@@ -43,9 +43,13 @@ class StrategicEvent:
             " ".join(self.leading_indicators),
             " ".join(self.retaliatory_risks),
             " ".join(self.countermeasures),
-            " ".join(str(v) for v in (self.deep_dive or {}).values() if isinstance(v, str)),
-            self.notes,
         ]
+        if self.deep_dive:
+            if isinstance(self.deep_dive, dict):
+                parts.append(" ".join(str(v) for v in self.deep_dive.values() if isinstance(v, str)))
+            else:
+                parts.append(str(self.deep_dive))
+        parts.append(self.notes or "")
         return " ".join(parts).strip().lower()
 
 
